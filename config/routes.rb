@@ -1,6 +1,12 @@
 Rails.application.routes.draw do
 
   get "api/users" => "users#index", defaults: { format: 'json' }
+
+  # Token Auth
+
+  post 'api/auth' => 'auth#authenticate', defaults: { format: 'json' }
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

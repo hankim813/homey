@@ -7,18 +7,23 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
-gem 'json', '~> 1.8.1'
+gem 'json', '~> 1.8.1' # Render json objects back to client
 
-gem 'pg'
+gem 'pg' # Postgresql database
+
+gem 'bcrypt-ruby', '~> 3.1.5' # Hashing Passwords
+
+gem 'annotate', '~> 2.6.5' # Annotate models
+
+gem 'jwt', '~> 1.2.0' # Token Auth
+
+gem 'rack-cors', '~> 0.3.1' # CORS policy
 
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'faker'
 	gem 'pry-rails'
 end
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.1.2'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'

@@ -1,5 +1,5 @@
 class ApplicationController < ActionController::API
-	before_action :set_current_user, :allow_access_to_client, :authenticate_request
+	before_action :authenticate_request
 
 	rescue_from NotAuthenticatedError do
 		render json: { error: 'Not Authorized' }, status: :unauthorized
@@ -12,12 +12,13 @@ class ApplicationController < ActionController::API
 	private
 
 		def set_current_user
-			if auth_token_expired?
-				@current_user ||= User.find(decoded_auth_token[:user_id])
-			end
+			p "set_current_user"
+			@current_user ||= User.find(@decoded_auth_token[:user_id])
 		end
 
 		def authenticate_request
+			p "authenticate_request"
+
 			if auth_token_expired?
 				fail AuthenticationTimeoutError
 			elsif !set_current_user
@@ -26,14 +27,17 @@ class ApplicationController < ActionController::API
 		end
 
 		def decoded_auth_token
+			p "decoded_auth_token"
 			@decoded_auth_token ||= AuthToken.decode(http_auth_header_content)
 		end
 
 		def auth_token_expired?
+			p "auth_token_expired?"
 			decoded_auth_token && decoded_auth_token.expired?
 		end
 
 		def http_auth_header_content
+			p "http_auth_header_content"
 			return @http_auth_header_content if defined?(@http_auth_header_content)
 			@http_auth_header_content = begin
 				if request.headers['Authorization'].present?
@@ -42,12 +46,5 @@ class ApplicationController < ActionController::API
 					nil
 				end
 			end
-		end
-
-
-		def allow_access_to_client
-			headers['Access-Control-Allow-Origin'] = '*'
-			headers['Access-Control-Allow-Methods'] = 'POST, GET, PUT, DELETE, OPTIONS'
-			headers['Access-Control-Allow-Headers'] = 'X-Requested-With, X-Prototype-Version'
 		end
 end

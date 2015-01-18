@@ -17,14 +17,13 @@ gem 'annotate', '~> 2.6.5' # Annotate models
 
 gem 'jwt', '~> 1.2.0' # Token Auth
 
+gem 'rack-cors', '~> 0.3.1' # CORS policy
+
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'faker'
 	gem 'pry-rails'
 end
-
-# To use ActiveModel has_secure_password
-# gem 'bcrypt-ruby', '~> 3.1.2'
 
 # To use Jbuilder templates for JSON
 # gem 'jbuilder'

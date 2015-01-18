@@ -1,4 +1,4 @@
-class AuthToken
+class AuthToken 
 	def self.encode(payload, exp=72.hours.from_now)
 		payload[:exp] = exp.to_i
 		JWT.encode(payload, Rails.application.secrets.secret_key_base)
@@ -9,7 +9,6 @@ class AuthToken
 		DecodedAuthToken.new(payload)
 		rescue
 			nil
-		end
 	end
 end
 

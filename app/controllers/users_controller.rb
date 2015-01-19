@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-	skip_before_action :authenticate_request, only: [:create, :find] 
+	skip_before_action :authenticate_request, only: [:create, :find]
 
 	def index
 		render json: User.all
@@ -32,7 +32,7 @@ class UsersController < ApplicationController
 
 	def create
 		userData = {
-			email: params[:email], 
+			email: params[:email],
 			password: params[:password],
 			first_name: params[:firstName],
 			last_name: params[:lastName],
@@ -44,13 +44,36 @@ class UsersController < ApplicationController
 		user = User.new(userData)
 
 		if user.save
-			render json: { 
+			render json: {
 				token: user.generate_auth_token,
-				user: user.id 
+				user: user.id
 			}
 		else
 			render json: { error: 'Invalid Username or Password' }, status: 400
 		end
+	end
+
+	def edit
+		user = User.find_by(email: @current_user.email)
+
+		userData = {
+			email: params[:email],
+			password: params[:password],
+			first_name: params[:firstName],
+			last_name: params[:lastName],
+			gender: params[:gender].to_i,
+			age: params[:age].to_i,
+			phone: params[:phone]
+		}
+		p userData
+		user.update_attributes(userData)
+		user.save
+	end
+
+	def delete
+		user = User.find_by(email: @current_user.email)
+		user.delete
+
 	end
 
 end

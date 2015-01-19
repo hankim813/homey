@@ -12,8 +12,8 @@ Rails.application.routes.draw do
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }
   get 'api/users/show' => 'users#show', defaults: { format: 'json'}
-  get 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
-  get 'api/users/delete' => 'users#delete', defaults: { format: 'json'}
+  put 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
+  delete 'api/users/delete' => 'users#delete', defaults: { format: 'json'}
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

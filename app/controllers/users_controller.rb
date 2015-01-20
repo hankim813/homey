@@ -19,15 +19,11 @@ class UsersController < ApplicationController
 	end
 
 	def show
-		render json: {
-			user: {
-				name: 		@current_user.first_name + " " + @current_user.last_name,
-				email: 		@current_user.email,
-				gender: 	@current_user.gender == 0 ? 'Male' : 'Female',
-				age: 			@current_user.age,
-				phone: 		@current_user.phone
-			}
-		}
+		if user = User.find_by(id: params[:id])
+			render json: user
+		else
+			render json: { error: 'User Not Found' }, status: 400
+		end
 	end
 
 	def create
@@ -54,7 +50,7 @@ class UsersController < ApplicationController
 	end
 
 	def edit
-		user = User.find_by(email: @current_user.email)
+		user = User.find_by(id: params[:id])
 		userData = {
 			first_name: params[:first_name],
 			last_name: params[:last_name],
@@ -72,7 +68,8 @@ class UsersController < ApplicationController
 	end
 
 	def delete
-		user = User.find_by(email: @current_user.email)
+		p params
+		user = User.find_by(id: params[:id])
 		if user.delete
 			render json: {}, status:200
 		else

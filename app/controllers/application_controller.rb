@@ -12,12 +12,10 @@ class ApplicationController < ActionController::API
 	private
 
 		def set_current_user
-			p "set_current_user"
 			@current_user ||= User.find(@decoded_auth_token[:user_id])
 		end
 
 		def authenticate_request
-			p "authenticate_request"
 
 			if auth_token_expired?
 				fail AuthenticationTimeoutError
@@ -27,17 +25,14 @@ class ApplicationController < ActionController::API
 		end
 
 		def decoded_auth_token
-			p "decoded_auth_token"
 			@decoded_auth_token ||= AuthToken.decode(http_auth_header_content)
 		end
 
 		def auth_token_expired?
-			p "auth_token_expired?"
 			decoded_auth_token && decoded_auth_token.expired?
 		end
 
 		def http_auth_header_content
-			p "http_auth_header_content"
 			return @http_auth_header_content if defined?(@http_auth_header_content)
 			@http_auth_header_content = begin
 				if request.headers['Authorization'].present?

@@ -55,12 +55,11 @@ class UsersController < ApplicationController
 
 	def edit
 		user = User.find_by(email: @current_user.email)
+		p user
 
 		userData = {
-			email: params[:email],
-			password: params[:password],
-			first_name: params[:firstName],
-			last_name: params[:lastName],
+			first_name: params[:first_name],
+			last_name: params[:last_name],
 			gender: params[:gender].to_i,
 			age: params[:age].to_i,
 			phone: params[:phone]

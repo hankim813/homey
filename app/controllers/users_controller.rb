@@ -55,8 +55,6 @@ class UsersController < ApplicationController
 
 	def edit
 		user = User.find_by(email: @current_user.email)
-		p user
-
 		userData = {
 			first_name: params[:first_name],
 			last_name: params[:last_name],
@@ -64,15 +62,22 @@ class UsersController < ApplicationController
 			age: params[:age].to_i,
 			phone: params[:phone]
 		}
-		p userData
 		user.update_attributes(userData)
-		user.save
+
+		if user.save
+			render json: {}, status:200
+		else
+			render json: { error: 'Invalid form fields' }, status: 400
+		end
 	end
 
 	def delete
 		user = User.find_by(email: @current_user.email)
-		user.delete
-
+		if user.delete
+			render json: {}, status:200
+		else
+			render json: { error: 'Invalid form fields' }, status: 400
+		end
 	end
 
 end

@@ -16,7 +16,6 @@ class ApplicationController < ActionController::API
 		end
 
 		def authenticate_request
-
 			if auth_token_expired?
 				fail AuthenticationTimeoutError
 			elsif !set_current_user

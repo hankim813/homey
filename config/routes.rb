@@ -7,7 +7,7 @@ Rails.application.routes.draw do
   # Login/Register
   post 'api/login' => 'users#find', defaults: { format: 'json' }
   post 'api/register' => 'users#create', defaults: { format: 'json' }
-
+  post 'api/fb' => 'users#fb', defaults: { format: 'json' }
 
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }

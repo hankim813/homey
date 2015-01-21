@@ -19,7 +19,7 @@ class User < ActiveRecord::Base
 	include BCrypt
 
 	validates_uniqueness_of :email
-	validates_presence_of :email, :password, :first_name, :last_name, :age, :phone, :gender
+	validates_presence_of :email, :password, :first_name, :last_name, :gender
 
 	# Password Hashing
 	def password

@@ -2,7 +2,7 @@ class ApplicationController < ActionController::API
 	before_action :authenticate_request
 
 	rescue_from NotAuthenticatedError do
-		render json: { error: 'Not Authorized' }, status: :unauthorized
+		render json: { error: 'Not Authorized' }, status: 401
 	end
 
 	rescue_from AuthenticationTimeoutError do

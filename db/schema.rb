@@ -52,6 +52,21 @@ ActiveRecord::Schema.define(version: 20150123231622) do
     t.integer "home_cleaning_id"
   end
 
+  create_table "service_providers", force: :cascade do |t|
+    t.string   "first_name"
+    t.string   "last_name"
+    t.string   "birthday"
+    t.integer  "gender"
+    t.string   "service"
+    t.integer  "years_experience"
+    t.string   "phone"
+    t.string   "address"
+    t.string   "email"
+    t.string   "password_hash"
+    t.datetime "created_at",       null: false
+    t.datetime "updated_at",       null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.datetime "created_at",    null: false
     t.datetime "updated_at",    null: false

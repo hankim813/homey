@@ -5,7 +5,7 @@ class AppointmentsController < ApplicationController
 	end
 
 	def show
-		if appointments = Appointment.where(user_id: params[:userId])
+		if appointments = Appointment.where(user_id: params[:id])
 			render json: appointments, status: 200
 		else
 			render json: { error: 'Appointments Not Found' }, status: 400
@@ -14,8 +14,8 @@ class AppointmentsController < ApplicationController
 
 	def create
 		apptData = {
-			user_id: params[:userId],
-			service_date: params[:serviceDate]
+			user_id: params[:id],
+			# service_date: params[:serviceDate]
 		}
 
 		appointment = Appointment.new(apptData)
@@ -40,7 +40,7 @@ class AppointmentsController < ApplicationController
 		end
 	end
 
-	def paid
+	def pay
 		if appointment = Appointment.find_by(id: params[:id])
 			appointment.paid = true;
 			if appointment.save

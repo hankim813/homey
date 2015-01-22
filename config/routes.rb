@@ -15,6 +15,13 @@ Rails.application.routes.draw do
   put 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
   delete 'api/users/:id/delete' => 'users#delete', defaults: { format: 'json'}
 
+  # Appointments
+  get 'api/users/:id/appointments' => 'appointments#show', defaults: { format: 'json' }
+  put 'api/appointments/:id/pay' => 'appointments#pay', defaults: { format: 'json' }
+  put 'api/appointments/:id/complete' => 'appointments#complete', defaults: { format: 'json' }
+  put 'api/appointments/:id/cancel' => 'appointments#cancel', defaults: { format: 'json' }
+  post 'api/users/:id/appointments' => 'appointments#create', defaults: { format: 'json' }
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

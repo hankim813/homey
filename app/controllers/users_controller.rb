@@ -11,7 +11,7 @@ class UsersController < ApplicationController
 		if user && user.authenticate(params[:password])
 			return render json: {
 				token: user.generate_auth_token,
-				user:  user.id
+				userId:  user.id
 			}, status: 201
 		else
 			return render json: { error: 'Invalid Username or Password' }, status: 400
@@ -29,7 +29,7 @@ class UsersController < ApplicationController
 	def create
 		# Check if the user exists already
 		if User.find_by(email: params[:email])
-			return render json: { error: "Email exists already, please login" }, status: 400 
+			return render json: { error: "Email exists already, please login" }, status: 400
 		end
 
 		user_data = {
@@ -46,7 +46,7 @@ class UsersController < ApplicationController
 		if user.save
 			return render json: {
 				token: user.generate_auth_token,
-				user: user.id
+				userId: user.id
 			}, status: 201
 		else
 			return render json: { error: 'Invalid Data' }, status: 400
@@ -70,7 +70,7 @@ class UsersController < ApplicationController
 				return render json: { error: 'Invalid Form Fields' }, status: 400
 			end
 		else
-			render json: { error: 'User Not Found' }, status: 400
+			return render json: { error: 'User Not Found' }, status: 400
 		end
 	end
 
@@ -82,7 +82,7 @@ class UsersController < ApplicationController
 				return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
 			end
 		else
-			render json: { error: 'User Not Found' }, status: 400
+			return render json: { error: 'User Not Found' }, status: 400
 		end
 	end
 
@@ -90,7 +90,7 @@ class UsersController < ApplicationController
 		if user = User.find_by(email: params[:email])
 			return render json: {
 				token: user.generate_auth_token,
-				user: user.id
+				userId: user.id
 			}, status: 201
 		else
 			user_data = {
@@ -104,7 +104,7 @@ class UsersController < ApplicationController
 			if user.save
 				return render json: {
 					token: user.generate_auth_token,
-					user: user.id
+					userId: user.id
 				}, status: 201
 			else
 				return render json: { error: 'Invalid form fields' }, status: 400

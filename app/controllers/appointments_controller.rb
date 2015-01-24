@@ -6,9 +6,9 @@ class AppointmentsController < ApplicationController
 
 	def show
 		if appointments = Appointment.where(user_id: params[:id])
-			render json: appointments, status: 200
+			return render json: appointments, status: 200
 		else
-			render json: { error: 'Appointments Not Found' }, status: 400
+			return render json: { error: 'Appointments Not Found' }, status: 400
 		end
 	end
 
@@ -21,9 +21,9 @@ class AppointmentsController < ApplicationController
 		appointment = Appointment.new(apptData)
 
 		if appointment.save
-			render json: appointment, status: 201
+			return render json: appointment, status: 201
 		else
-			render json: { error: 'Invalid Input' }, status: 400
+			return render json: { error: 'Invalid Input' }, status: 400
 		end
 	end
 
@@ -31,12 +31,12 @@ class AppointmentsController < ApplicationController
 		if appointment = Appointment.find_by(id: params[:id])
 			appointment.completed = true;
 			if appointment.save
-				render json: appointment, status: 200
+				return render json: appointment, status: 200
 			else
-				render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
+				return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
 			end
 		else
-			render json: { error: 'Appointment Not Found' }, status: 400
+			return render json: { error: 'Appointment Not Found' }, status: 400
 		end
 	end
 

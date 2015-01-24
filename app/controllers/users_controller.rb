@@ -9,24 +9,29 @@ class UsersController < ApplicationController
 		user = User.find_by(email: params[:email])
 
 		if user && user.authenticate(params[:password])
-			render json: {
+			return render json: {
 				token: user.generate_auth_token,
 				user:  user.id
 			}, status: 201
 		else
-			render json: { error: 'Invalid Username or Password' }, status: 400
+			return render json: { error: 'Invalid Username or Password' }, status: 400
 		end
 	end
 
 	def show
 		if user = User.find_by(id: params[:id])
-			render json: user, status: 200
+			return render json: user, status: 200
 		else
-			render json: { error: 'User Not Found' }, status: 400
+			return render json: { error: 'User Not Found' }, status: 400
 		end
 	end
 
 	def create
+		# Check if the user exists already
+		if User.find_by(email: params[:email])
+			return render json: { error: "Email exists already, please login" }, status: 400 
+		end
+
 		user_data = {
 			email: params[:email],
 			password: params[:password],
@@ -39,12 +44,12 @@ class UsersController < ApplicationController
 		user = User.new(user_data)
 
 		if user.save
-			render json: {
+			return render json: {
 				token: user.generate_auth_token,
 				user: user.id
 			}, status: 201
 		else
-			render json: { error: 'Invalid Username or Password' }, status: 400
+			return render json: { error: 'Invalid Data' }, status: 400
 		end
 	end
 
@@ -60,9 +65,9 @@ class UsersController < ApplicationController
 			user.update_attributes(user_data)
 
 			if user.save
-				render json: {}, status:200
+				return render json: user, status:200
 			else
-				render json: { error: 'Invalid Form Fields' }, status: 400
+				return render json: { error: 'Invalid Form Fields' }, status: 400
 			end
 		else
 			render json: { error: 'User Not Found' }, status: 400
@@ -72,9 +77,9 @@ class UsersController < ApplicationController
 	def delete
 		if user = User.find_by(id: params[:id])
 			if user.delete
-				render json: {}, status:200
+				return render json: {}, status:200
 			else
-				render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
+				return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
 			end
 		else
 			render json: { error: 'User Not Found' }, status: 400
@@ -83,7 +88,7 @@ class UsersController < ApplicationController
 
 	def fb
 		if user = User.find_by(email: params[:email])
-			render json: {
+			return render json: {
 				token: user.generate_auth_token,
 				user: user.id
 			}, status: 201
@@ -97,12 +102,12 @@ class UsersController < ApplicationController
 			}
 			user = User.new(user_data)
 			if user.save
-				render json: {
+				return render json: {
 					token: user.generate_auth_token,
 					user: user.id
 				}, status: 201
 			else
-				render json: { error: 'Invalid form fields' }, status: 400
+				return render json: { error: 'Invalid form fields' }, status: 400
 			end
 		end
 	end

@@ -2,14 +2,14 @@ class BookingsController < ApplicationController
 	before_action :set_current_user, only: [:home_cleaning]
 
 	def index
-		render json: Booking.all, status: 200
+		return render json: Booking.all, status: 200
 	end
 
 	def show
 		if booking = Booking.find_by(appointment_id: params[:id])
-			render json: booking, status: 200
+			return render json: booking, status: 200
 		else
-			render json: { error: 'Booking Not Found' }, status: 400
+			return render json: { error: 'Booking Not Found' }, status: 400
 		end
 	end
 
@@ -47,9 +47,9 @@ class BookingsController < ApplicationController
 
 			# Book everything
 			booking = book_service(booking_data)
-			render json: booking, status: 201
+			return render json: booking, status: 201
 		else
-			render json: { error: 'Invalid Data' }, status: 400
+			return render json: { error: 'Invalid Data' }, status: 400
 		end
 
 	end
@@ -58,7 +58,7 @@ class BookingsController < ApplicationController
 		if (params.has_key?(:loads) && params.has_key?(:ironed))
 			laundry = Laundry.new({loads: params[:loads], ironed: params[:ironed], home_cleaning_id: id})
 			if !laundry.save 
-				render json: { error: 'Invalid Data' }, status: 400
+				return render json: { error: 'Invalid Data' }, status: 400
 			end
 		end
 		return laundry
@@ -69,7 +69,7 @@ class BookingsController < ApplicationController
 		if booking.save
 			return booking
 		else
-			render json: { error: 'Invalid Data' }, status: 400
+			return render json: { error: 'Invalid Data' }, status: 400
 		end
 	end
 
@@ -78,7 +78,7 @@ class BookingsController < ApplicationController
 		if appointment.save
 			return appointment
 		else
-			render json: { error: 'Invalid Data' }, status: 400
+			return render json: { error: 'Invalid Data' }, status: 400
 		end
 	end
 end

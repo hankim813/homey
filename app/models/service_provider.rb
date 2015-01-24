@@ -19,8 +19,8 @@ class ServiceProvider < ActiveRecord::Base
   end
 
   # Token Auth
-  def generate_auth_token
-    payload = { user_id: self.id }
+  def generate_auth_token_sp
+    payload = { sp_id: self.id }
     AuthToken.encode(payload)
   end
 end

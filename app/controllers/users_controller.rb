@@ -27,7 +27,7 @@ class UsersController < ApplicationController
 	end
 
 	def create
-		userData = {
+		user_data = {
 			email: params[:email],
 			password: params[:password],
 			first_name: params[:firstName],
@@ -36,7 +36,7 @@ class UsersController < ApplicationController
 			age: params[:age].to_i,
 			phone: params[:phone]
 		}
-		user = User.new(userData)
+		user = User.new(user_data)
 
 		if user.save
 			render json: {
@@ -50,14 +50,14 @@ class UsersController < ApplicationController
 
 	def edit
 		if user = User.find_by(id: params[:id])
-			userData = {
+			user_data = {
 				first_name: params[:first_name],
 				last_name: params[:last_name],
 				gender: params[:gender].to_i,
 				age: params[:age].to_i,
 				phone: params[:phone]
 			}
-			user.update_attributes(userData)
+			user.update_attributes(user_data)
 
 			if user.save
 				render json: {}, status:200
@@ -88,14 +88,14 @@ class UsersController < ApplicationController
 				user: user.id
 			}, status: 201
 		else
-			userData = {
+			user_data = {
 				email: params[:email],
 				password: params[:password],
 				first_name: params[:first_name],
 				last_name: params[:last_name],
 				gender: params[:gender] === 'male' ? 0 : 1
 			}
-			user = User.new(userData)
+			user = User.new(user_data)
 			if user.save
 				render json: {
 					token: user.generate_auth_token,

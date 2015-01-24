@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150122071620) do
+ActiveRecord::Schema.define(version: 20150123231622) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,32 @@ ActiveRecord::Schema.define(version: 20150122071620) do
     t.datetime "created_at",                   null: false
     t.datetime "updated_at",                   null: false
     t.boolean  "canceled",     default: false
+  end
+
+  create_table "bookings", force: :cascade do |t|
+    t.integer  "appointment_id"
+    t.decimal  "quote",            precision: 8, scale: 2
+    t.integer  "serviceable_id"
+    t.string   "serviceable_type"
+    t.text     "notes"
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "num_of_providers"
+  end
+
+  create_table "home_cleanings", force: :cascade do |t|
+    t.integer  "bedrooms"
+    t.integer  "bathrooms"
+    t.integer  "kitchens"
+    t.integer  "livingrooms"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  create_table "laundries", force: :cascade do |t|
+    t.integer "loads"
+    t.integer "ironed"
+    t.integer "home_cleaning_id"
   end
 
   create_table "users", force: :cascade do |t|

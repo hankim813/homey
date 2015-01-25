@@ -12,7 +12,11 @@ class ApplicationController < ActionController::API
 	private
 
 		def set_current_user
-			@current_user ||= User.find(@decoded_auth_token[:user_id])
+			if @decoded_auth_token[:user_id]
+				@current_user ||= User.find_by(id: @decoded_auth_token[:user_id])
+			elsif @decoded_auth_token[:sp_id]
+				@current_sp ||= ServiceProvider.find_by(id: @decoded_auth_token[:sp_id])
+			end
 		end
 
 		def authenticate_request

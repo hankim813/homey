@@ -20,7 +20,7 @@ Rails.application.routes.draw do
   # Service Providers
   get 'api/serviceProviders' => 'providers#index', defaults: { format: 'json' }
   get 'api/serviceProviders/:id' => 'providers#show', defaults: { format: 'json'}
-  put 'api/serviceProviders/edit' => 'providers#edit', defaults: { format: 'json'}
+  put 'api/serviceProviders/:id/edit' => 'providers#edit', defaults: { format: 'json'}
   delete 'api/serviceProviders/:id/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Appointments

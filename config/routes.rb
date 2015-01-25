@@ -8,12 +8,20 @@ Rails.application.routes.draw do
   post 'api/login' => 'users#find', defaults: { format: 'json' }
   post 'api/register' => 'users#create', defaults: { format: 'json' }
   post 'api/fb' => 'users#fb', defaults: { format: 'json' }
+  post 'api/serviceProviders/register' => 'providers#create', defaults: { format: 'json' }
+  post 'api/serviceProviders/login' => 'providers#find', defaults: { format: 'json' }
 
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }
   get 'api/users/:id' => 'users#show', defaults: { format: 'json'}
   put 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
   delete 'api/users/:id/delete' => 'users#delete', defaults: { format: 'json'}
+
+  # Service Providers
+  get 'api/serviceProviders' => 'providers#index', defaults: { format: 'json' }
+  get 'api/serviceProviders/:id' => 'providers#show', defaults: { format: 'json'}
+  put 'api/serviceProviders/:id/edit' => 'providers#edit', defaults: { format: 'json'}
+  delete 'api/serviceProviders/:id/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Appointments
   get 'api/users/:id/appointments' => 'appointments#show', defaults: { format: 'json' }

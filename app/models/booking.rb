@@ -19,10 +19,12 @@ class Booking < ActiveRecord::Base
 
 	def service
 		case serviceable_type
-			when "HomeCleaning"
-				service = HomeCleaning.find_by(id: serviceable_id)
-			when "OfficeCleaning"
-				service = OfficeCleaning.find_by(id: serviceable_id)
+			when 'HomeCleaning'
+				HomeCleaning.find_by(id: serviceable_id)
+			when 'OfficeCleaning'
+				OfficeCleaning.find_by(id: serviceable_id)
+			when 'CarWash'
+				CarWash.find_by(id: serviceable_id)
 		end
 	end
 end

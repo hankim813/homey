@@ -32,7 +32,7 @@ class BookingsController < ApplicationController
 			check_and_create_laundry(@service.id)
 
 			# Book everything
-			booking = book_service("HomeCleaning")
+			booking = book_service('HomeCleaning')
 
 			return render json: booking, status: 201
 		else
@@ -47,7 +47,21 @@ class BookingsController < ApplicationController
 		@service = OfficeCleaning.new({sqft: params[:sqft]})
 
 		if @service.save
-			booking = book_service("OfficeCleaning")
+			booking = book_service('OfficeCleaning')
+
+			return render json: booking, status: 201
+		else
+			return render json: { error: 'Invalid Data' }, status: 400
+		end
+	end
+
+	def car_wash
+		book_appointment
+
+		@service = CarWash.new({cars: params[:cars], water_provided: params[:water_provided]})
+
+		if @service.save
+			booking = book_service('CarWash')
 
 			return render json: booking, status: 201
 		else

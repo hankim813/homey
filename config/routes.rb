@@ -37,6 +37,7 @@ Rails.application.routes.draw do
   post 'api/appointments/bookings/car-washes' => 'bookings#car_wash', defaults: { format: 'json' }
   post 'api/appointments/bookings/drivers' => 'bookings#drivers', defaults: { format: 'json' }
   post 'api/appointments/bookings/securities' => 'bookings#securities', defaults: { format: 'json' }
+  post 'api/appointments/bookings/chefs' => 'bookings#chefs', defaults: { format: 'json' }
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

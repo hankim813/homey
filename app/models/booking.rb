@@ -30,6 +30,12 @@ class Booking < ActiveRecord::Base
 				Driver.find_by(id: serviceable_id)
 			when 'Security'
 				Security.find_by(id: serviceable_id)
+			when 'Chef'
+				Chef.find_by(id: serviceable_id)
 		end
+	end
+
+	def price
+		return '%.2f' % quote
 	end
 end

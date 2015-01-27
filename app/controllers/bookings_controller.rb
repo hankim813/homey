@@ -100,6 +100,19 @@ class BookingsController < ApplicationController
 		end
 	end
 
+	def chefs
+		book_appointment
+
+		@service = Chef.new({cuisine: params[:cuisine], serving_size: params[:serving_size]})
+		if @service.save
+			booking = book_service('Chef')
+
+			return render json: booking, status: 201
+		else
+			return render json: { error: 'Invalid Data' }, status: 400
+		end
+	end
+
 	private
 
 		def check_and_book_laundry(id)

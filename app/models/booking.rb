@@ -18,6 +18,8 @@ class Booking < ActiveRecord::Base
 	belongs_to :appointment
 	belongs_to :serviceable, polymorphic: true
 
+	validates :num_of_providers, numericality: { greater_than: 0 }
+
 	def service
 		case serviceable_type
 			when 'HomeCleaning'
@@ -34,6 +36,8 @@ class Booking < ActiveRecord::Base
 				Chef.find_by(id: serviceable_id)
 			when 'Gardening'
 				Gardening.find_by(id: serviceable_id)
+			when 'Contractor'
+				Contractor.find_by(id: serviceable_id)
 		end
 	end
 

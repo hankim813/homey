@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150127061928) do
+ActiveRecord::Schema.define(version: 20150127083811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -61,6 +61,14 @@ ActiveRecord::Schema.define(version: 20150127061928) do
     t.datetime "updated_at",   null: false
   end
 
+  create_table "contractors", force: :cascade do |t|
+    t.integer  "type"
+    t.text     "problem_description"
+    t.text     "problem_frequency"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
   create_table "drivers", force: :cascade do |t|
     t.integer  "day_or_night"
     t.datetime "created_at",   null: false
@@ -77,7 +85,6 @@ ActiveRecord::Schema.define(version: 20150127061928) do
   create_table "guards", force: :cascade do |t|
     t.integer  "security_id"
     t.integer  "type"
-    t.integer  "size"
     t.integer  "hours_required"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
@@ -102,6 +109,7 @@ ActiveRecord::Schema.define(version: 20150127061928) do
     t.integer  "sqft"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean  "kitchen"
   end
 
   create_table "securities", force: :cascade do |t|

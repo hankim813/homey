@@ -5,7 +5,6 @@
 #  id             :integer          not null, primary key
 #  security_id    :integer
 #  type           :integer
-#  size           :integer
 #  hours_required :integer
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null

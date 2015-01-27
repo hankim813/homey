@@ -6,6 +6,7 @@
 #  sqft       :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  kitchen    :boolean
 #
 
 class OfficeCleaning < ActiveRecord::Base

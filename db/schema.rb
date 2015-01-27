@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150126004020) do
+ActiveRecord::Schema.define(version: 20150127010603) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20150126004020) do
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
     t.integer  "num_of_providers"
+    t.integer  "time_required"
   end
 
   create_table "car_washes", force: :cascade do |t|
@@ -42,6 +43,21 @@ ActiveRecord::Schema.define(version: 20150126004020) do
     t.boolean  "water_provided"
     t.datetime "created_at",     null: false
     t.datetime "updated_at",     null: false
+  end
+
+  create_table "cars", force: :cascade do |t|
+    t.integer  "driver_id"
+    t.string   "model"
+    t.integer  "wheel_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean  "owned"
+  end
+
+  create_table "drivers", force: :cascade do |t|
+    t.integer  "day_or_night"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
   end
 
   create_table "home_cleanings", force: :cascade do |t|

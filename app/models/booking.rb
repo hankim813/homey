@@ -11,6 +11,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  num_of_providers :integer
+#  time_required    :integer
 #
 
 class Booking < ActiveRecord::Base
@@ -25,6 +26,8 @@ class Booking < ActiveRecord::Base
 				OfficeCleaning.find_by(id: serviceable_id)
 			when 'CarWash'
 				CarWash.find_by(id: serviceable_id)
+			when 'Driver'
+				Driver.find_by(id: serviceable_id)
 		end
 	end
 end

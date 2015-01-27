@@ -69,6 +69,21 @@ class BookingsController < ApplicationController
 		end
 	end
 
+	def drivers
+		book_appointment
+
+		@service = Driver.new({day_or_night: params[:day_or_night]})
+		if @service.save
+			check_and_create_cars(@service.id)
+
+			booking = book_service('Driver')
+
+			return render json: booking, status: 201
+		else
+			return render json: { error: 'Invalid Data' }, status: 400
+		end
+	end
+
 	private
 
 		def check_and_create_laundry(id)
@@ -81,6 +96,17 @@ class BookingsController < ApplicationController
 			return laundry
 		end
 
+		def check_and_create_cars(id)
+			if params.has_key?(:cars)
+				params[:cars].each do |car|
+					car = Car.new({ model: car[:model], wheel_type: car[:wheel_type], driver_id: id, owned: car[:owned]})
+					if !car.save
+						return render json: { error: 'Invalid Data' }, status: 400
+					end
+				end
+			end
+		end
+
 		def book_service(service_name)
 			booking_data = {
 				quote: 200.00, # calculate the actual quote in the backend with params
@@ -88,7 +114,8 @@ class BookingsController < ApplicationController
 				serviceable_type: service_name,
 				serviceable_id: @service.id,
 				notes: params[:notes],
-				num_of_providers: params[:providers]
+				num_of_providers: params[:providers],
+				time_required: params[:time_required]
 			}
 
 			booking = Booking.new(booking_data)

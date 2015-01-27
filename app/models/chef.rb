@@ -10,4 +10,5 @@
 #
 
 class Chef < ActiveRecord::Base
+	has_one :booking, as: :serviceable
 end

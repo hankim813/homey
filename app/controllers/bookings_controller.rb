@@ -1,5 +1,6 @@
 class BookingsController < ApplicationController
 	before_action :set_current_user, only: [:home_cleaning, :office_cleaning]
+	before_action :book_appointment, except: [:index, :show]
 
 	def index
 		return render json: Booking.all, status: 200
@@ -14,10 +15,6 @@ class BookingsController < ApplicationController
 	end
 
 	def home_cleaning
-
-		# Create appointment first
-		book_appointment
-
 		service_data = {
 			bedrooms: params[:bedrooms],
 			bathrooms: params[:bathrooms],
@@ -25,13 +22,11 @@ class BookingsController < ApplicationController
 			livingrooms: params[:livingrooms]
 		}
 
-		# Create the service
 		@service = HomeCleaning.new(service_data)
 
 		if @service.save
 			check_and_book_laundry(@service.id)
 
-			# Book everything
 			booking = book_service('HomeCleaning')
 
 			return render json: booking, status: 201
@@ -42,8 +37,6 @@ class BookingsController < ApplicationController
 	end
 
 	def office_cleaning
-		book_appointment
-
 		@service = OfficeCleaning.new({sqft: params[:sqft]})
 
 		if @service.save
@@ -56,8 +49,6 @@ class BookingsController < ApplicationController
 	end
 
 	def car_wash
-		book_appointment
-
 		@service = CarWash.new({cars: params[:cars], water_provided: params[:water_provided]})
 
 		if @service.save
@@ -70,9 +61,8 @@ class BookingsController < ApplicationController
 	end
 
 	def drivers
-		book_appointment
-
 		@service = Driver.new({day_or_night: params[:day_or_night]})
+
 		if @service.save
 			book_cars(@service.id)
 
@@ -85,8 +75,6 @@ class BookingsController < ApplicationController
 	end
 
 	def securities
-		book_appointment
-
 		@service = Security.new()
 
 		if @service.save
@@ -101,11 +89,22 @@ class BookingsController < ApplicationController
 	end
 
 	def chefs
-		book_appointment
-
 		@service = Chef.new({cuisine: params[:cuisine], serving_size: params[:serving_size]})
+
 		if @service.save
 			booking = book_service('Chef')
+
+			return render json: booking, status: 201
+		else
+			return render json: { error: 'Invalid Data' }, status: 400
+		end
+	end
+
+	def gardenings
+		@service = Gardening.new({acres: params[:acres], type: params[:type]})
+		
+		if @service.save
+			booking = book_service('Gardening')
 
 			return render json: booking, status: 201
 		else

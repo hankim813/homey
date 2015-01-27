@@ -11,7 +11,7 @@
 #  created_at       :datetime         not null
 #  updated_at       :datetime         not null
 #  num_of_providers :integer
-#  time_required    :integer
+#  time_required    :float
 #
 
 class Booking < ActiveRecord::Base
@@ -32,6 +32,8 @@ class Booking < ActiveRecord::Base
 				Security.find_by(id: serviceable_id)
 			when 'Chef'
 				Chef.find_by(id: serviceable_id)
+			when 'Gardening'
+				Gardening.find_by(id: serviceable_id)
 		end
 	end
 

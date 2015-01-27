@@ -28,6 +28,8 @@ class Booking < ActiveRecord::Base
 				CarWash.find_by(id: serviceable_id)
 			when 'Driver'
 				Driver.find_by(id: serviceable_id)
+			when 'Security'
+				Security.find_by(id: serviceable_id)
 		end
 	end
 end

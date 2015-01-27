@@ -29,7 +29,7 @@ class BookingsController < ApplicationController
 		@service = HomeCleaning.new(service_data)
 
 		if @service.save
-			check_and_create_laundry(@service.id)
+			check_and_book_laundry(@service.id)
 
 			# Book everything
 			booking = book_service('HomeCleaning')
@@ -74,7 +74,7 @@ class BookingsController < ApplicationController
 
 		@service = Driver.new({day_or_night: params[:day_or_night]})
 		if @service.save
-			check_and_create_cars(@service.id)
+			book_cars(@service.id)
 
 			booking = book_service('Driver')
 
@@ -84,9 +84,25 @@ class BookingsController < ApplicationController
 		end
 	end
 
+	def securities
+		book_appointment
+
+		@service = Security.new()
+
+		if @service.save
+			book_guards(@service.id)
+
+			booking = book_service('Security')
+
+			return render json: booking, status: 201
+		else
+			return render json: { error: 'Invalid Data' }, status: 400
+		end
+	end
+
 	private
 
-		def check_and_create_laundry(id)
+		def check_and_book_laundry(id)
 			if (params.has_key?(:loads) && params.has_key?(:ironed))
 				laundry = Laundry.new({loads: params[:loads], ironed: params[:ironed], home_cleaning_id: id})
 				if !laundry.save 
@@ -96,7 +112,7 @@ class BookingsController < ApplicationController
 			return laundry
 		end
 
-		def check_and_create_cars(id)
+		def book_cars(id)
 			if params.has_key?(:cars)
 				params[:cars].each do |car|
 					car = Car.new({ model: car[:model], wheel_type: car[:wheel_type], driver_id: id, owned: car[:owned]})
@@ -104,6 +120,27 @@ class BookingsController < ApplicationController
 						return render json: { error: 'Invalid Data' }, status: 400
 					end
 				end
+			else
+				return render json: { error: 'Invalid Data' }, status: 400
+			end
+		end
+
+		def book_guards(id)
+			if params.has_key?(:guards)
+				params[:guards].each do |guard|
+					guard = Guard.new({
+						security_id: id,
+						type: guard[:type],
+						size: guard[:size],
+						hours_required:	guard[:hours_required]
+					})
+
+					if !guard.save
+						return render json: { error: 'Invalid Data' }, status: 400
+					end
+				end
+			else
+				return render json: { error: 'Invalid Data' }, status: 400 
 			end
 		end
 

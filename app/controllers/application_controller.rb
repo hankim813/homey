@@ -16,6 +16,8 @@ class ApplicationController < ActionController::API
 				@current_user ||= User.find_by(id: @decoded_auth_token[:user_id])
 			elsif @decoded_auth_token[:sp_id]
 				@current_sp ||= ServiceProvider.find_by(id: @decoded_auth_token[:sp_id])
+			elsif @decoded_auth_token[:admin_id]
+				@current_admin ||= Admin.find_by(id: @decoded_auth_token[:admin_id])
 			end
 		end
 

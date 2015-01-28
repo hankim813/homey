@@ -22,7 +22,7 @@ class AdminController < ApplicationController
     if admin = Admin.find_by(id: params[:id])
       return render json: admin, status: 200
     else
-      return render json: { error: 'Service Provider Not Found' }, status: 400
+      return render json: { error: 'Admin Not Found' }, status: 400
     end
   end
 
@@ -30,10 +30,10 @@ class AdminController < ApplicationController
     adminData = {
       email: params[:email],
       password: params[:password],
-      first_name: params[:first_name],
-      last_name: params[:last_name],
+      first_name: params[:firstName],
+      last_name: params[:lastName],
       gender: params[:gender].to_i,
-      birthday: params[:birthday].to_i,
+      birthday: params[:birthday],
       phone: params[:phone],
     }
 

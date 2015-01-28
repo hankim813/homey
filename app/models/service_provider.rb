@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: service_providers
+#
+#  id               :integer          not null, primary key
+#  first_name       :string
+#  last_name        :string
+#  gender           :integer
+#  service          :string
+#  years_experience :integer
+#  phone            :string
+#  address          :string
+#  email            :string
+#  password_hash    :string
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  birthday         :date
+#
+
 class ServiceProvider < ActiveRecord::Base
   include BCrypt
 

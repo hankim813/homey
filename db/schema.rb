@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150125020149) do
+ActiveRecord::Schema.define(version: 20150127083811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -35,6 +35,59 @@ ActiveRecord::Schema.define(version: 20150125020149) do
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
     t.integer  "num_of_providers"
+    t.float    "time_required"
+  end
+
+  create_table "car_washes", force: :cascade do |t|
+    t.integer  "cars"
+    t.boolean  "water_provided"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  create_table "cars", force: :cascade do |t|
+    t.integer  "driver_id"
+    t.string   "model"
+    t.integer  "wheel_type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean  "owned"
+  end
+
+  create_table "chefs", force: :cascade do |t|
+    t.string   "cuisine"
+    t.integer  "serving_size"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "contractors", force: :cascade do |t|
+    t.integer  "type"
+    t.text     "problem_description"
+    t.text     "problem_frequency"
+    t.datetime "created_at",          null: false
+    t.datetime "updated_at",          null: false
+  end
+
+  create_table "drivers", force: :cascade do |t|
+    t.integer  "day_or_night"
+    t.datetime "created_at",   null: false
+    t.datetime "updated_at",   null: false
+  end
+
+  create_table "gardenings", force: :cascade do |t|
+    t.float    "acres"
+    t.string   "type"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "guards", force: :cascade do |t|
+    t.integer  "security_id"
+    t.integer  "type"
+    t.integer  "hours_required"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
   end
 
   create_table "home_cleanings", force: :cascade do |t|
@@ -50,6 +103,18 @@ ActiveRecord::Schema.define(version: 20150125020149) do
     t.integer "loads"
     t.integer "ironed"
     t.integer "home_cleaning_id"
+  end
+
+  create_table "office_cleanings", force: :cascade do |t|
+    t.integer  "sqft"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean  "kitchen"
+  end
+
+  create_table "securities", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "service_providers", force: :cascade do |t|

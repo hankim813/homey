@@ -33,7 +33,7 @@ class ProvidersController < ApplicationController
       first_name: params[:first_name],
       last_name: params[:last_name],
       gender: params[:gender].to_i,
-      birthday: params[:birthday].to_i,
+      birthday: params[:birthday],
       phone: params[:phone],
       years_experience: params[:years_experience],
       service: params[:service],

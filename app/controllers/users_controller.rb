@@ -38,7 +38,7 @@ class UsersController < ApplicationController
 			first_name: params[:firstName],
 			last_name: params[:lastName],
 			gender: params[:gender].to_i,
-			age: params[:age].to_i,
+			birthday: params[:birthday],
 			phone: params[:phone]
 		}
 		user = User.new(user_data)
@@ -59,7 +59,7 @@ class UsersController < ApplicationController
 				first_name: params[:first_name],
 				last_name: params[:last_name],
 				gender: params[:gender].to_i,
-				age: params[:age].to_i,
+				birthday: params[:birthday],
 				phone: params[:phone]
 			}
 			user.update_attributes(user_data)

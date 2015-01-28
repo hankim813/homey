@@ -8,10 +8,10 @@
 #  first_name    :string
 #  last_name     :string
 #  gender        :integer
-#  age           :integer
 #  email         :string
 #  phone         :string
 #  password_hash :string
+#  birthday      :date
 #
 
 class User < ActiveRecord::Base

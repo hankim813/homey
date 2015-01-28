@@ -198,7 +198,7 @@ class BookingsController < ApplicationController
 
 		def book_service(service_name)
 			booking_data = {
-				quote: 200.00, # calculate the actual quote in the backend with params
+				quote: params[:quote], # calculate the actual quote in the backend with params
 				appointment_id: @appointment.id,
 				serviceable_type: service_name,
 				serviceable_id: @service.id,

@@ -12,5 +12,6 @@
 class CarWash < ActiveRecord::Base
 	has_one :booking, as: :serviceable
 
-	validates_presence_of :cars, :water_provided
+	validates_presence_of :cars
+	validates_inclusion_of :water_provided, in: [true, false]
 end

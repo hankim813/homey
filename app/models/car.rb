@@ -14,5 +14,6 @@
 class Car < ActiveRecord::Base
 	belongs_to :driver
 
-	validates_presence_of :model, :driver_id, :wheel_type, :owned
+	validates_presence_of :model, :driver_id, :wheel_type
+	validates_inclusion_of :owned, in: [true, false]
 end

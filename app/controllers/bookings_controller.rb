@@ -1,5 +1,5 @@
 class BookingsController < ApplicationController
-	before_action :set_current_user, only: [:home_cleaning, :office_cleaning]
+	before_action :set_current_user, except: [:index, :show]
 	before_action :book_appointment, except: [:index, :show]
 
 	def index
@@ -25,12 +25,15 @@ class BookingsController < ApplicationController
 		@service = HomeCleaning.new(service_data)
 
 		if @service.save
-			check_and_book_laundry(@service.id)
-			book_service('HomeCleaning')
+			error = check_and_book_laundry(@service.id)
+			if error.has_key?(:msg)
+				return render json: { error: error[:msg] }, status: error[:status]
+			else
+				book_service('HomeCleaning')
+			end
 		else
 			return render json: { error: 'Invalid Data' }, status: 400
 		end
-
 	end
 
 	def office_cleaning
@@ -65,8 +68,12 @@ class BookingsController < ApplicationController
 		})
 
 		if @service.save
-			book_cars(@service.id)
-			book_service('Driver')
+			error = book_cars(@service.id)
+			if error.has_key?(:msg)
+				return render json: { error: error[:msg] }, status: error[:status]
+			else
+				book_service('Driver')
+			end
 		else
 			return render json: { error: 'Invalid Data' }, status: 400
 		end
@@ -76,8 +83,12 @@ class BookingsController < ApplicationController
 		@service = Security.new()
 
 		if @service.save
-			book_guards(@service.id)
-			book_service('Security')
+			error = book_guards(@service.id)
+			if error.has_key?(:msg)
+				return render json: { error: error[:msg] }, status: error[:status]
+			else
+				book_service('Security')
+			end
 		else
 			return render json: { error: 'Invalid Data' }, status: 400
 		end
@@ -129,26 +140,40 @@ class BookingsController < ApplicationController
 			if (params.has_key?(:loads) && params.has_key?(:ironed))
 				laundry = Laundry.new({loads: params[:loads], ironed: params[:ironed], home_cleaning_id: id})
 				if !laundry.save 
-					return render json: { error: 'Invalid Data' }, status: 400
+					return { msg: 'Invalid Data', status: 400 }
 				end
 			end
-			return laundry
+			return {}
 		end
 
 		def book_cars(id)
+			valid_cars = []
 			if params.has_key?(:cars)
 				params[:cars].each do |car|
-					car = Car.new({ model: car[:model], wheel_type: car[:wheel_type], driver_id: id, owned: car[:owned]})
-					if !car.save
-						return render json: { error: 'Invalid Data' }, status: 400
+					car = Car.new({ 
+						model: car[:model], 
+						wheel_type: car[:wheel_type], 
+						driver_id: id, 
+						owned: car[:owned]
+					})
+
+					valid_cars << car if car.valid?
+				end
+				if valid_cars.size == params[:cars].size
+					valid_cars.each do |car|
+						car.save
 					end
+					return {}
+				else
+					return { msg: 'Invalid Car Data', status: 400 }
 				end
 			else
-				return render json: { error: 'Invalid Data' }, status: 400
+				return { msg: 'Invalid Data', status: 400 }
 			end
 		end
 
 		def book_guards(id)
+			valid_guards = []
 			if params.has_key?(:guards)
 				params[:guards].each do |guard|
 					guard = Guard.new({
@@ -156,13 +181,18 @@ class BookingsController < ApplicationController
 						type: guard[:type],
 						hours_required:	guard[:hours_required]
 					})
-
-					if !guard.save
-						return render json: { error: 'Invalid Data' }, status: 400
+					valid_guards << guard if guard.valid?
+				end
+				if valid_guards.size == params[:guards].size
+					valid_guards.each do |guard|
+						guard.save
 					end
+					return {}
+				else
+					return { msg: 'Invalid Data', status: 400 }
 				end
 			else
-				return render json: { error: 'Invalid Data' }, status: 400 
+				return { error: 'Invalid Data', status: 400 }
 			end
 		end
 
@@ -198,6 +228,4 @@ class BookingsController < ApplicationController
 				return render json: { error: 'Invalid Data' }, status: 400
 			end
 		end
-
-	
 end

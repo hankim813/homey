@@ -19,7 +19,7 @@ class Admin < ActiveRecord::Base
   end
 
   # Token Auth
-  def generate_auth_token_sp
+  def generate_auth_token_admin
     payload = { admin_id: self.id }
     AuthToken.encode(payload)
   end

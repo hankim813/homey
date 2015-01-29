@@ -197,14 +197,18 @@ class BookingsController < ApplicationController
 		end
 
 		def book_service(service_name)
+			quote = calculate_hc_quote
+			providers = calculate_hc_providers
+			time = calculate_hc_time
+
 			booking_data = {
-				quote: params[:quote], # calculate the actual quote in the backend with params
+				quote: quote,
 				appointment_id: @appointment.id,
 				serviceable_type: service_name,
 				serviceable_id: @service.id,
 				notes: params[:notes],
-				num_of_providers: params[:providers],
-				time_required: params[:time_required]
+				num_of_providers: providers,
+				time_required: time
 			}
 
 			booking = Booking.new(booking_data)
@@ -227,5 +231,50 @@ class BookingsController < ApplicationController
 			else
 				return render json: { error: 'Invalid Data' }, status: 400
 			end
+		end
+
+		def calculate_hc_quote
+			total = 0
+
+			if params[:bedrooms] == 2 && params[:bathrooms] == 2 && params[:kitchens] == 1 && params[:livingrooms] == 1
+				total = 800
+				total += params[:loads] * 350
+				total += params[:ironed] * 300
+			elsif params[:bedrooms] == 3 && params[:bathrooms] == 3 && params[:kitchens] == 1 && params[:livingrooms] == 1
+				total = 1000
+				total += params[:loads] * 350
+				total += params[:ironed] * 300
+			else
+				total += params[:bedrooms] * 300
+				total += params[:bathrooms] * 200
+				total += params[:kitchens] * 250
+				total += params[:livingrooms] * 250
+				total += params[:loads] * 350
+				total += params[:ironed] * 300
+			end
+			p 'quote'
+			p total
+			return total
+		end
+
+		def calculate_hc_time
+			p 'time'
+			total = 0 
+			total += params[:bedrooms] * 0.50
+			total += params[:bathrooms] * 0.50
+			total += params[:kitchens] * 1.00
+			total += params[:livingrooms] * 0.50
+			total += params[:loads] * 4.00
+			total += params[:ironed] * 4.00
+			p total
+			return total
+		end
+
+		def calculate_hc_providers
+			p 'bedrooms divided by three'
+			p params[:bedrooms] / 3.0
+			p 'providers'
+			p (params[:bedrooms] / 3.0).ceil
+			return (params[:bedrooms] / 3.0).ceil
 		end
 end

@@ -29,6 +29,9 @@ class BookingsController < ApplicationController
 			if error.has_key?(:msg)
 				return render json: { error: error[:msg] }, status: error[:status]
 			else
+				calculate_hc_providers
+				calculate_hc_time
+				calculate_hc_quote
 				book_service('HomeCleaning')
 			end
 		else
@@ -43,6 +46,9 @@ class BookingsController < ApplicationController
 		})
 
 		if @service.save
+			calculate_oc_providers
+			calculate_oc_time
+			calculate_oc_quote
 			book_service('OfficeCleaning')
 		else
 			return render json: { error: 'Invalid Data' }, status: 400
@@ -197,18 +203,15 @@ class BookingsController < ApplicationController
 		end
 
 		def book_service(service_name)
-			quote = calculate_hc_quote
-			providers = calculate_hc_providers
-			time = calculate_hc_time
 
 			booking_data = {
-				quote: quote,
+				quote: @quote,
 				appointment_id: @appointment.id,
 				serviceable_type: service_name,
 				serviceable_id: @service.id,
 				notes: params[:notes],
-				num_of_providers: providers,
-				time_required: time
+				num_of_providers: @providers,
+				time_required: @time
 			}
 
 			booking = Booking.new(booking_data)
@@ -233,32 +236,33 @@ class BookingsController < ApplicationController
 			end
 		end
 
+# For Home Cleanings
 		def calculate_hc_quote
 			total = 0
 
 			if params[:bedrooms] == 2 && params[:bathrooms] == 2 && params[:kitchens] == 1 && params[:livingrooms] == 1
-				total = 800
-				total += params[:loads] * 350
-				total += params[:ironed] * 300
-			elsif params[:bedrooms] == 3 && params[:bathrooms] == 3 && params[:kitchens] == 1 && params[:livingrooms] == 1
 				total = 1000
 				total += params[:loads] * 350
 				total += params[:ironed] * 300
-			else
-				total += params[:bedrooms] * 300
-				total += params[:bathrooms] * 200
-				total += params[:kitchens] * 250
-				total += params[:livingrooms] * 250
+				total += ((@providers - 1) * 300)
+			elsif params[:bedrooms] == 3 && params[:bathrooms] == 3 && params[:kitchens] == 1 && params[:livingrooms] == 1
+				total = 1500
 				total += params[:loads] * 350
 				total += params[:ironed] * 300
+				total += ((@providers - 1) * 300)
+			else
+				total += params[:bedrooms] * 400
+				total += params[:bathrooms] * 200
+				total += params[:kitchens] * 300
+				total += params[:livingrooms] * 300
+				total += params[:loads] * 350
+				total += params[:ironed] * 300
+				total += (@providers - 1) * 300
 			end
-			p 'quote'
-			p total
-			return total
+			return @quote = total
 		end
 
 		def calculate_hc_time
-			p 'time'
 			total = 0 
 			total += params[:bedrooms] * 0.50
 			total += params[:bathrooms] * 0.50
@@ -266,15 +270,27 @@ class BookingsController < ApplicationController
 			total += params[:livingrooms] * 0.50
 			total += params[:loads] * 4.00
 			total += params[:ironed] * 4.00
-			p total
-			return total
+			return @time = total
 		end
 
 		def calculate_hc_providers
-			p 'bedrooms divided by three'
-			p params[:bedrooms] / 3.0
-			p 'providers'
-			p (params[:bedrooms] / 3.0).ceil
-			return (params[:bedrooms] / 3.0).ceil
+			@providers = (params[:bedrooms] / 3.0).ceil
+		end
+
+# For Office Cleaning
+		def calculate_oc_quote
+			total = 0 
+			total += params[:sqft] * 2
+			total += 300 if params[:kitchen] 
+			total += (@providers - 1) * 400
+			@quote = total
+		end
+
+		def calculate_oc_time
+			@time = params[:sqft] / 250.00
+		end
+
+		def calculate_oc_providers 
+			@providers = ((params[:sqft] - 500) / 1000).ceil + 1
 		end
 end

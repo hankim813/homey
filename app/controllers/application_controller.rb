@@ -48,10 +48,6 @@ class ApplicationController < ActionController::API
 			end
 		end
 
-		def to_boolean(str)
-			str == 'true'
-		end
-
 		def error_msg
 			return render json: { error: 'Invalid Data' }, status: 400
 		end

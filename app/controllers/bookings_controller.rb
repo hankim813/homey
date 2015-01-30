@@ -3,6 +3,21 @@ class BookingsController < ApplicationController
 	before_action :book_appointment, except: [:index, :show]
 	after_filter :close_deal, except: [:index, :show]
 
+	include PriceCalculator
+
+	def calculate_price(type)
+		case type
+			when 'home_cleaning' then data = PriceCalculator.home_cleaning(params)
+			when 'office_cleaning' then data = PriceCalculator.office_cleaning(params)
+			when 'car_wash' then data = PriceCalculator.car_wash(params)
+			when 'driver' then data = PriceCalculator.driver(params)
+			when 'security' then data = PriceCalculator.security(params)
+		end
+		@time = data[:time]
+		@providers = data[:providers]
+		@quote = data[:quote]
+	end
+
 	def index
 		return render json: Booking.all, status: 200
 	end
@@ -26,11 +41,9 @@ class BookingsController < ApplicationController
 		@service = HomeCleaning.new(service_data)
 
 		if @service.save
-			error = check_and_book_laundry(@service.id)
-			if error.has_key?(:msg)
-				return render json: { error: error[:msg] }, status: error[:status]
-			else
-				calculate_hc_quote
+			check_and_book_laundry(@service.id)
+			unless @errors
+				calculate_price('home_cleaning')
 				book_service('HomeCleaning')
 			end
 		else
@@ -45,7 +58,7 @@ class BookingsController < ApplicationController
 		})
 
 		if @service.save
-			calculate_oc_quote
+			calculate_price('office_cleaning')
 			book_service('OfficeCleaning')
 		else
 			@errors = true
@@ -59,7 +72,7 @@ class BookingsController < ApplicationController
 		})
 
 		if @service.save
-			calculate_cw_quote
+			calculate_price('car_wash')
 			book_service('CarWash')
 		else
 			@errors = true
@@ -72,7 +85,7 @@ class BookingsController < ApplicationController
 		if @service.save
 			book_cars(@service.id)
 			unless @errors
-				calculate_d_quote
+				calculate_price('driver')
 				book_service('Driver')
 			end
 		else
@@ -86,7 +99,7 @@ class BookingsController < ApplicationController
 		if @service.save
 			book_guards(@service.id)
 			unless @errors
-				calculate_sc_quote
+				calculate_price('security')
 				book_service('Security')
 			end
 		else
@@ -140,10 +153,9 @@ class BookingsController < ApplicationController
 			if (params.has_key?(:loads) && params.has_key?(:ironed))
 				laundry = Laundry.new({loads: params[:loads], ironed: params[:ironed], home_cleaning_id: id})
 				if !laundry.save 
-					return { msg: 'Invalid Data', status: 400 }
+					@errors = true
 				end
 			end
-			return {}
 		end
 
 		def book_guards(id)
@@ -212,6 +224,7 @@ class BookingsController < ApplicationController
 		end
 
 		def book_appointment
+			@errors = false
 			appointment_data = {
 				user_id: @current_user.id,
 				service_date: params[:serviceDate]
@@ -235,133 +248,4 @@ class BookingsController < ApplicationController
 			end
 		end
 
-	# For Home Cleanings
-		def calculate_hc_quote
-			calculate_hc_time
-			calculate_hc_providers
-			if params[:bedrooms] == 2 && params[:bathrooms] == 2 && params[:kitchens] == 1 && params[:livingrooms] == 1
-				@quote = 1000
-				@quote += params[:loads] * 350
-				@quote += params[:ironed] * 300
-				@quote += ((@providers - 1) * 300)
-			elsif params[:bedrooms] == 3 && params[:bathrooms] == 3 && params[:kitchens] == 1 && params[:livingrooms] == 1
-				@quote = 1500
-				@quote += params[:loads] * 350
-				@quote += params[:ironed] * 300
-				@quote += ((@providers - 1) * 300)
-			else
-				@quote = params[:bedrooms] * 400
-				@quote += params[:bathrooms] * 200
-				@quote += params[:kitchens] * 300
-				@quote += params[:livingrooms] * 300
-				@quote += params[:loads] * 350
-				@quote += params[:ironed] * 300
-				@quote += (@providers - 1) * 300
-			end
-		end
-
-		def calculate_hc_time
-			@time = params[:bedrooms] * 0.50
-			@time += params[:bathrooms] * 0.50
-			@time += params[:kitchens] * 1.00
-			@time += params[:livingrooms] * 0.50
-			@time += params[:loads] * 4.00
-			@time += params[:ironed] * 4.00
-		end
-
-		def calculate_hc_providers
-			@providers = (params[:bedrooms] / 3.0).ceil
-		end
-
-	# For Office Cleaning
-		def calculate_oc_quote
-			calculate_oc_time
-			calculate_oc_providers
-			@quote = params[:sqft] * 2
-			@quote += 300 if params[:kitchen] 
-			@quote += (@providers - 1) * 400
-		end
-
-		def calculate_oc_time
-			@time = params[:sqft] / 250.00
-		end
-
-		def calculate_oc_providers 
-			@providers = ((params[:sqft] - 500) / 1000).ceil + 1
-		end
-
-	# For Car Wash
-		def calculate_cw_quote
-			calculate_cw_time
-			calculate_cw_providers
-			@quote = params[:cars] * 500
-		end
-
-		def calculate_cw_time
-			@time = params[:cars]
-		end
-
-		def calculate_cw_providers
-			@providers = params[:cars]
-		end
-
-	# For Drivers
-		def calculate_d_quote
-			calculate_d_time
-			calculate_d_providers
-			@quote = 0
-			params[:cars].each do |car|
-				if to_boolean(car[:owned])
-					@quote += 200 if car[:day_or_night].to_i == 0
-					car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)  
-				else
-					@quote += 200 if car[:day_or_night].to_i == 0
-					car[:wheel_type].to_i == 0 ? @quote += 3500 : @quote += 7000
-					car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)
-				end
-			end
-
-		end
-
-		def calculate_d_time
-			@time = 0
-			params[:cars].each do |car|
-				@time += car[:hours]
-			end
-		end
-
-		def calculate_d_providers
-			@providers = params[:cars].size
-		end
-
-	# For Security
-		def calculate_sc_quote
-			calculate_sc_time
-			calculate_sc_providers
-			@quote = 0
-			params[:guards].each do |guard|
-				if guard[:type].to_i == 0
-					p 'Askari'
-					@quote += 1500
-					@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 1500)
-					p @quote
-				else
-					p 'Bodyguard'
-					@quote += 3000
-					@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 3000)
-					p @quote
-				end
-			end
-		end
-
-		def calculate_sc_time
-			@time = 0
-			params[:guards].each do |guard|
-				@time += guard[:hours]
-			end
-		end
-
-		def calculate_sc_providers
-			@providers = params[:guards].size
-		end
 end

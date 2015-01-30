@@ -41,9 +41,9 @@ Rails.application.routes.draw do
 
   # Bookings
 
-  post 'api/appointments/bookings/home-cleanings' => 'bookings#home_cleaning', defaults: { format: 'json' }
-  post 'api/appointments/bookings/office-cleanings' => 'bookings#office_cleaning', defaults: { format: 'json' }
-  post 'api/appointments/bookings/car-washes' => 'bookings#car_wash', defaults: { format: 'json' }
+  post 'api/appointments/bookings/home-cleanings' => 'bookings#home_cleanings', defaults: { format: 'json' }
+  post 'api/appointments/bookings/office-cleanings' => 'bookings#office_cleanings', defaults: { format: 'json' }
+  post 'api/appointments/bookings/car-washes' => 'bookings#car_washes', defaults: { format: 'json' }
   post 'api/appointments/bookings/drivers' => 'bookings#drivers', defaults: { format: 'json' }
   post 'api/appointments/bookings/securities' => 'bookings#securities', defaults: { format: 'json' }
   post 'api/appointments/bookings/chefs' => 'bookings#chefs', defaults: { format: 'json' }

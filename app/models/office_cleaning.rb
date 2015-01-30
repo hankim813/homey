@@ -12,6 +12,6 @@
 class OfficeCleaning < ActiveRecord::Base
 	has_one :booking, as: :serviceable
 
-	validates_presence_of :sqft
 	validates_inclusion_of :kitchen, in: [true, false]
+	validates :sqft, numericality: { greater_than: 500}, presence: true
 end

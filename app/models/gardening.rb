@@ -12,4 +12,7 @@
 class Gardening < ActiveRecord::Base
 	has_one :booking, as: :serviceable
   self.inheritance_column = nil 
+
+  validates_presence_of :type
+  validates :acres, numericality: { greater_than: 0.50 }, presence: true
 end

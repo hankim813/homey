@@ -84,14 +84,13 @@ class BookingsController < ApplicationController
 		@service = Security.new()
 
 		if @service.save
-			error = book_guards(@service.id)
-			if error.has_key?(:msg)
-				return render json: { error: error[:msg] }, status: error[:status]
-			else
+			book_guards(@service.id)
+			unless @errors
+				calculate_sc_quote
 				book_service('Security')
 			end
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
@@ -151,23 +150,23 @@ class BookingsController < ApplicationController
 			valid_guards = []
 			if params.has_key?(:guards)
 				params[:guards].each do |guard|
-					guard = Guard.new({
+					new_guard = Guard.new({
 						security_id: id,
-						type: guard[:type],
-						hours_required:	guard[:hours_required]
+						type: guard[:type].to_i,
+						hours_required:	guard[:hours]
 					})
-					valid_guards << guard if guard.valid?
+					valid_guards << new_guard if new_guard.valid?
 				end
 				if valid_guards.size == params[:guards].size
 					valid_guards.each do |guard|
 						guard.save
 					end
-					return {}
+					@errors = false
 				else
-					return { msg: 'Invalid Data', status: 400 }
+					@errors = true
 				end
 			else
-				return { error: 'Invalid Data', status: 400 }
+				@errors = true
 			end
 		end
 
@@ -314,11 +313,11 @@ class BookingsController < ApplicationController
 			params[:cars].each do |car|
 				if to_boolean(car[:owned])
 					@quote += 200 if car[:day_or_night].to_i == 0
-					car[:hours] >= 12 ? (@quote += (car[:hours] - 12) * 300 + 1500) : (@quote += car[:hours] * 300)  
+					car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)  
 				else
 					@quote += 200 if car[:day_or_night].to_i == 0
 					car[:wheel_type].to_i == 0 ? @quote += 3500 : @quote += 7000
-					car[:hours] >= 12 ? (@quote += (car[:hours] - 12) * 300 + 1500) : (@quote += car[:hours] * 300)
+					car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)
 				end
 			end
 
@@ -333,5 +332,36 @@ class BookingsController < ApplicationController
 
 		def calculate_d_providers
 			@providers = params[:cars].size
+		end
+
+	# For Security
+		def calculate_sc_quote
+			calculate_sc_time
+			calculate_sc_providers
+			@quote = 0
+			params[:guards].each do |guard|
+				if guard[:type].to_i == 0
+					p 'Askari'
+					@quote += 1500
+					@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 1500)
+					p @quote
+				else
+					p 'Bodyguard'
+					@quote += 3000
+					@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 3000)
+					p @quote
+				end
+			end
+		end
+
+		def calculate_sc_time
+			@time = 0
+			params[:guards].each do |guard|
+				@time += guard[:hours]
+			end
+		end
+
+		def calculate_sc_providers
+			@providers = params[:guards].size
 		end
 end

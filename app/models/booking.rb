@@ -18,7 +18,7 @@ class Booking < ActiveRecord::Base
 	belongs_to :appointment
 	belongs_to :serviceable, polymorphic: true
 
-	validates :num_of_providers, numericality: { greater_than: 0 }
+	validates :num_of_providers, numericality: { greater_than: 0 }, allow_nil: true
 
 	def service
 		case serviceable_type
@@ -42,6 +42,6 @@ class Booking < ActiveRecord::Base
 	end
 
 	def price
-		return '%.2f' % quote
+		return '%.2f' % quote unless quote.nil?
 	end
 end

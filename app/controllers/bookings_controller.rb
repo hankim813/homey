@@ -14,6 +14,7 @@ class BookingsController < ApplicationController
 			when 'security' then data = PriceCalculator.security(params)
 			when 'chef' then data = PriceCalculator.chef(params)
 			when 'gardening' then data = PriceCalculator.gardening(params)
+			when 'contractor' then data = PriceCalculator.contractor
 		end
 		@time = data[:time]
 		@providers = data[:providers]
@@ -139,11 +140,10 @@ class BookingsController < ApplicationController
 
 	def contractors
 		@service = Contractor.new({
-			type: params[:type],
+			type: params[:type].to_i,
 			problem_description: params[:problem_description],
 			problem_frequency: params[:problem_frequency]
 		})
-
 		if @service.save
 			book_service('Contractor')
 		else
@@ -243,11 +243,14 @@ class BookingsController < ApplicationController
 			if @appointment.save 
 				@booking.appointment = @appointment
 				if @booking.save
+					p '247'
 					return render json: @appointment, status: 201 
 				else
+					p '250'
 					return error_msg
 				end
 			else	
+				p '254'
 				return error_msg
 			end
 		end

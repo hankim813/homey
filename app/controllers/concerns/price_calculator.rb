@@ -159,6 +159,11 @@ module PriceCalculator
 	end
 
 	def self.calculate_gd_providers(params)
-		@providers = (params[:acres] / 0.50).ceil
+		@providers = (params[:acres] / 1.00).ceil
 	end
+
+	# For Contractor
+	# def self.contractor
+		# return { @quote: nil, @time: nil, @providers: nil }
+	# end
 end

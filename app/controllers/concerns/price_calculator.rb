@@ -130,7 +130,6 @@ module PriceCalculator
 	end
 
 	# For Chef
-
 	def self.chef(params)
 		calculate_chef_time(params)
 		calculate_chef_providers(params)
@@ -145,5 +144,21 @@ module PriceCalculator
 
 	def self.calculate_chef_providers(params)
 		@providers = ((params[:serving_size] - 15) / 10.00).ceil + 1
+	end
+
+	# For Gardening
+	def self.gardening(params)
+		calculate_gd_time(params)
+		calculate_gd_providers(params)
+		@quote = (params[:acres] / 0.50 ) * 1500
+		return { quote: @quote, time: @time, providers: @providers }
+	end
+
+	def self.calculate_gd_time(params)
+		@time = params[:acres] * 4.0
+	end
+
+	def self.calculate_gd_providers(params)
+		@providers = (params[:acres] / 0.50).ceil
 	end
 end

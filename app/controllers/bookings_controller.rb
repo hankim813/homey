@@ -13,6 +13,7 @@ class BookingsController < ApplicationController
 			when 'driver' then data = PriceCalculator.driver(params)
 			when 'security' then data = PriceCalculator.security(params)
 			when 'chef' then data = PriceCalculator.chef(params)
+			when 'gardening' then data = PriceCalculator.gardening(params)
 		end
 		@time = data[:time]
 		@providers = data[:providers]
@@ -118,7 +119,7 @@ class BookingsController < ApplicationController
 			calculate_price('chef')
 			book_service('Chef')
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
@@ -129,9 +130,10 @@ class BookingsController < ApplicationController
 		})
 
 		if @service.save
+			calculate_price('gardening')
 			book_service('Gardening')
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
@@ -145,7 +147,7 @@ class BookingsController < ApplicationController
 		if @service.save
 			book_service('Contractor')
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 

@@ -243,16 +243,12 @@ class BookingsController < ApplicationController
 			if @appointment.save 
 				@booking.appointment = @appointment
 				if @booking.save
-					p '247'
 					return render json: @appointment, status: 201 
 				else
-					p '250'
 					return error_msg
 				end
 			else	
-				p '254'
 				return error_msg
 			end
 		end
-
 end

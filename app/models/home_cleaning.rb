@@ -14,4 +14,6 @@
 class HomeCleaning < ActiveRecord::Base
 	has_one :booking, as: :serviceable
 	has_one :laundry
+
+	validates :bedrooms, :bathrooms, :kitchens, :livingrooms, numericality: { greater_than: 0 }, presence: true
 end

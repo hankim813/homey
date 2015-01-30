@@ -1,6 +1,7 @@
 class BookingsController < ApplicationController
 	before_action :set_current_user, except: [:index, :show]
 	before_action :book_appointment, except: [:index, :show]
+	after_filter :close_deal, except: [:index, :show]
 
 	def index
 		return render json: Booking.all, status: 200
@@ -14,7 +15,7 @@ class BookingsController < ApplicationController
 		end
 	end
 
-	def home_cleaning
+	def home_cleanings
 		service_data = {
 			bedrooms: params[:bedrooms],
 			bathrooms: params[:bathrooms],
@@ -29,59 +30,53 @@ class BookingsController < ApplicationController
 			if error.has_key?(:msg)
 				return render json: { error: error[:msg] }, status: error[:status]
 			else
-				calculate_hc_providers
-				calculate_hc_time
 				calculate_hc_quote
 				book_service('HomeCleaning')
 			end
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
-	def office_cleaning
+	def office_cleanings
 		@service = OfficeCleaning.new({
 			sqft: params[:sqft],
 			kitchen: params[:kitchen]
 		})
 
 		if @service.save
-			calculate_oc_providers
-			calculate_oc_time
 			calculate_oc_quote
 			book_service('OfficeCleaning')
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
-	def car_wash
+	def car_washes
 		@service = CarWash.new({
 			cars: params[:cars], 
 			water_provided: params[:water_provided]
 		})
 
 		if @service.save
+			calculate_cw_quote
 			book_service('CarWash')
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
 	def drivers
-		@service = Driver.new({
-			day_or_night: params[:day_or_night]
-		})
+		@service = Driver.new() 
 
 		if @service.save
-			error = book_cars(@service.id)
-			if error.has_key?(:msg)
-				return render json: { error: error[:msg] }, status: error[:status]
-			else
+			book_cars(@service.id)
+			unless @errors
+				calculate_d_quote
 				book_service('Driver')
 			end
 		else
-			return render json: { error: 'Invalid Data' }, status: 400
+			@errors = true
 		end
 	end
 
@@ -152,32 +147,6 @@ class BookingsController < ApplicationController
 			return {}
 		end
 
-		def book_cars(id)
-			valid_cars = []
-			if params.has_key?(:cars)
-				params[:cars].each do |car|
-					car = Car.new({ 
-						model: car[:model], 
-						wheel_type: car[:wheel_type], 
-						driver_id: id, 
-						owned: car[:owned]
-					})
-
-					valid_cars << car if car.valid?
-				end
-				if valid_cars.size == params[:cars].size
-					valid_cars.each do |car|
-						car.save
-					end
-					return {}
-				else
-					return { msg: 'Invalid Car Data', status: 400 }
-				end
-			else
-				return { msg: 'Invalid Data', status: 400 }
-			end
-		end
-
 		def book_guards(id)
 			valid_guards = []
 			if params.has_key?(:guards)
@@ -202,11 +171,36 @@ class BookingsController < ApplicationController
 			end
 		end
 
-		def book_service(service_name)
+		def book_cars(id)
+			valid_cars = []
+			if params.has_key?(:cars)
+				params[:cars].each do |car|
+					new_car = Car.new({
+						driver_id: id,
+						wheel_type: car[:wheel_type],
+						hours:	car[:hours],
+						owned: car[:owned],
+						model: car[:model],
+						day_or_night: car[:day_or_night]
+					})
+					valid_cars << new_car if new_car.valid?
+				end
+				if valid_cars.size == params[:cars].size
+					valid_cars.each do |car|
+						car.save
+					end
+					@errors = false
+				else
+					@errors = true
+				end
+			else
+				@errprs = true
+			end
+		end
 
+		def book_service(service_name)
 			booking_data = {
 				quote: @quote,
-				appointment_id: @appointment.id,
 				serviceable_type: service_name,
 				serviceable_id: @service.id,
 				notes: params[:notes],
@@ -214,76 +208,79 @@ class BookingsController < ApplicationController
 				time_required: @time
 			}
 
-			booking = Booking.new(booking_data)
-			if booking.save
-				return render json: booking, status: 201
-			else
-				return render json: { error: 'Invalid Data' }, status: 400
-			end
+			@booking = Booking.new(booking_data)
+			@errors = !@booking.valid?
 		end
 
-		def book_appointment()
+		def book_appointment
 			appointment_data = {
 				user_id: @current_user.id,
 				service_date: params[:serviceDate]
 			}
 
 			@appointment = Appointment.new(appointment_data)
-			if @appointment.save
-				return @appointment
-			else
-				return render json: { error: 'Invalid Data' }, status: 400
+		end
+
+		def close_deal
+			return error_msg if @errors
+
+			if @appointment.save 
+				@booking.appointment = @appointment
+				if @booking.save
+					return render json: @appointment, status: 201 
+				else
+					return error_msg
+				end
+			else	
+				return error_msg
 			end
 		end
 
-# For Home Cleanings
+	# For Home Cleanings
 		def calculate_hc_quote
-			total = 0
-
+			calculate_hc_time
+			calculate_hc_providers
 			if params[:bedrooms] == 2 && params[:bathrooms] == 2 && params[:kitchens] == 1 && params[:livingrooms] == 1
-				total = 1000
-				total += params[:loads] * 350
-				total += params[:ironed] * 300
-				total += ((@providers - 1) * 300)
+				@quote = 1000
+				@quote += params[:loads] * 350
+				@quote += params[:ironed] * 300
+				@quote += ((@providers - 1) * 300)
 			elsif params[:bedrooms] == 3 && params[:bathrooms] == 3 && params[:kitchens] == 1 && params[:livingrooms] == 1
-				total = 1500
-				total += params[:loads] * 350
-				total += params[:ironed] * 300
-				total += ((@providers - 1) * 300)
+				@quote = 1500
+				@quote += params[:loads] * 350
+				@quote += params[:ironed] * 300
+				@quote += ((@providers - 1) * 300)
 			else
-				total += params[:bedrooms] * 400
-				total += params[:bathrooms] * 200
-				total += params[:kitchens] * 300
-				total += params[:livingrooms] * 300
-				total += params[:loads] * 350
-				total += params[:ironed] * 300
-				total += (@providers - 1) * 300
+				@quote = params[:bedrooms] * 400
+				@quote += params[:bathrooms] * 200
+				@quote += params[:kitchens] * 300
+				@quote += params[:livingrooms] * 300
+				@quote += params[:loads] * 350
+				@quote += params[:ironed] * 300
+				@quote += (@providers - 1) * 300
 			end
-			return @quote = total
 		end
 
 		def calculate_hc_time
-			total = 0 
-			total += params[:bedrooms] * 0.50
-			total += params[:bathrooms] * 0.50
-			total += params[:kitchens] * 1.00
-			total += params[:livingrooms] * 0.50
-			total += params[:loads] * 4.00
-			total += params[:ironed] * 4.00
-			return @time = total
+			@time = params[:bedrooms] * 0.50
+			@time += params[:bathrooms] * 0.50
+			@time += params[:kitchens] * 1.00
+			@time += params[:livingrooms] * 0.50
+			@time += params[:loads] * 4.00
+			@time += params[:ironed] * 4.00
 		end
 
 		def calculate_hc_providers
 			@providers = (params[:bedrooms] / 3.0).ceil
 		end
 
-# For Office Cleaning
+	# For Office Cleaning
 		def calculate_oc_quote
-			total = 0 
-			total += params[:sqft] * 2
-			total += 300 if params[:kitchen] 
-			total += (@providers - 1) * 400
-			@quote = total
+			calculate_oc_time
+			calculate_oc_providers
+			@quote = params[:sqft] * 2
+			@quote += 300 if params[:kitchen] 
+			@quote += (@providers - 1) * 400
 		end
 
 		def calculate_oc_time
@@ -292,5 +289,49 @@ class BookingsController < ApplicationController
 
 		def calculate_oc_providers 
 			@providers = ((params[:sqft] - 500) / 1000).ceil + 1
+		end
+
+	# For Car Wash
+		def calculate_cw_quote
+			calculate_cw_time
+			calculate_cw_providers
+			@quote = params[:cars] * 500
+		end
+
+		def calculate_cw_time
+			@time = params[:cars]
+		end
+
+		def calculate_cw_providers
+			@providers = params[:cars]
+		end
+
+	# For Drivers
+		def calculate_d_quote
+			calculate_d_time
+			calculate_d_providers
+			@quote = 0
+			params[:cars].each do |car|
+				if to_boolean(car[:owned])
+					@quote += 200 if car[:day_or_night].to_i == 0
+					car[:hours] >= 12 ? (@quote += (car[:hours] - 12) * 300 + 1500) : (@quote += car[:hours] * 300)  
+				else
+					@quote += 200 if car[:day_or_night].to_i == 0
+					car[:wheel_type].to_i == 0 ? @quote += 3500 : @quote += 7000
+					car[:hours] >= 12 ? (@quote += (car[:hours] - 12) * 300 + 1500) : (@quote += car[:hours] * 300)
+				end
+			end
+
+		end
+
+		def calculate_d_time
+			@time = 0
+			params[:cars].each do |car|
+				@time += car[:hours]
+			end
+		end
+
+		def calculate_d_providers
+			@providers = params[:cars].size
 		end
 end

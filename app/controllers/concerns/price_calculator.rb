@@ -108,15 +108,11 @@ module PriceCalculator
 		@quote = 0
 		params[:guards].each do |guard|
 			if guard[:type].to_i == 0
-				p 'Askari'
 				@quote += 1500
 				@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 1500)
-				p @quote
 			else
-				p 'Bodyguard'
 				@quote += 3000
 				@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 3000)
-				p @quote
 			end
 		end
 		return { quote: @quote, time: @time, providers: @providers }
@@ -131,5 +127,23 @@ module PriceCalculator
 
 	def self.calculate_sc_providers(params)
 		@providers = params[:guards].size
+	end
+
+	# For Chef
+
+	def self.chef(params)
+		calculate_chef_time(params)
+		calculate_chef_providers(params)
+		@quote = 1500
+		@quote += (@providers - 1) * 1200
+		return { quote: @quote, time: @time, providers: @providers }
+	end
+
+	def self.calculate_chef_time(params)
+		@time = 8.00
+	end
+
+	def self.calculate_chef_providers(params)
+		@providers = ((params[:serving_size] - 15) / 10.00).ceil + 1
 	end
 end

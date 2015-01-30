@@ -12,6 +12,7 @@ class BookingsController < ApplicationController
 			when 'car_wash' then data = PriceCalculator.car_wash(params)
 			when 'driver' then data = PriceCalculator.driver(params)
 			when 'security' then data = PriceCalculator.security(params)
+			when 'chef' then data = PriceCalculator.chef(params)
 		end
 		@time = data[:time]
 		@providers = data[:providers]
@@ -114,6 +115,7 @@ class BookingsController < ApplicationController
 		})
 
 		if @service.save
+			calculate_price('chef')
 			book_service('Chef')
 		else
 			return render json: { error: 'Invalid Data' }, status: 400

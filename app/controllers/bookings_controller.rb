@@ -5,22 +5,6 @@ class BookingsController < ApplicationController
 
 	include PriceCalculator
 
-	def calculate_price(type)
-		case type
-			when 'home_cleaning' then data = PriceCalculator.home_cleaning(params)
-			when 'office_cleaning' then data = PriceCalculator.office_cleaning(params)
-			when 'car_wash' then data = PriceCalculator.car_wash(params)
-			when 'driver' then data = PriceCalculator.driver(params)
-			when 'security' then data = PriceCalculator.security(params)
-			when 'chef' then data = PriceCalculator.chef(params)
-			when 'gardening' then data = PriceCalculator.gardening(params)
-			when 'contractor' then data = PriceCalculator.contractor
-		end
-		@time = data[:time]
-		@providers = data[:providers]
-		@quote = data[:quote]
-	end
-
 	def index
 		return render json: Booking.all, status: 200
 	end
@@ -47,7 +31,7 @@ class BookingsController < ApplicationController
 			check_and_book_laundry(@service.id)
 			unless @errors
 				calculate_price('home_cleaning')
-				book_service('HomeCleaning')
+				book_service('HomeCleaning') unless @errors
 			end
 		else
 			@errors = true
@@ -152,6 +136,24 @@ class BookingsController < ApplicationController
 	end
 
 	private
+
+		def calculate_price(type)
+			params[:user_id] = @current_user.id
+			case type
+				when 'home_cleaning' then data = PriceCalculator.home_cleaning(params)
+				when 'office_cleaning' then data = PriceCalculator.office_cleaning(params)
+				when 'car_wash' then data = PriceCalculator.car_wash(params)
+				when 'driver' then data = PriceCalculator.driver(params)
+				when 'security' then data = PriceCalculator.security(params)
+				when 'chef' then data = PriceCalculator.chef(params)
+				when 'gardening' then data = PriceCalculator.gardening(params)
+				when 'contractor' then data = PriceCalculator.contractor
+			end
+			@time = data[:time]
+			@providers = data[:providers]
+			@quote = data[:quote]
+			@errors = data[:errors]
+		end
 
 		def check_and_book_laundry(id)
 			if (params.has_key?(:loads) && params.has_key?(:ironed))

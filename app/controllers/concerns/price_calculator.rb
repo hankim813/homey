@@ -22,7 +22,18 @@ module PriceCalculator
 			@quote += params[:ironed] * 300
 			@quote += (@providers - 1) * 300
 		end
-		return { quote: @quote, time: @time, providers: @providers }
+		@params = params
+		result = validate_coupon(params[:code])
+		p result
+		if result.has_key?(:error)
+			@errors = true
+		else
+			p @quote
+			@errors = false
+			@quote *= ((100 - result[:percentage]) / 100.00)
+			p @quote
+		end
+		return { quote: @quote, time: @time, providers: @providers, errors: @errors }
 	end
 
 	def self.calculate_hc_time(params)
@@ -166,4 +177,52 @@ module PriceCalculator
 	# def self.contractor
 		# return { @quote: nil, @time: nil, @providers: nil }
 	# end
+
+	# Coupon
+
+	def self.validate_coupon(code)
+		if @coupon = Discount.find_by(code: code)
+			if limit_reached?
+				return { error: 'This code is expired', status: 419 }
+			else
+				if @coupon.reusable
+					@coupon.times_redeemed += 1
+					@coupon.save
+					return { percentage: @coupon.percentage }
+				else
+					if discount_used?
+						return { error: 'You have already used this coupon!', status: 419 }
+					else
+						if redemption_created?
+							@coupon.times_redeemed += 1
+							@coupon.save
+							return { percentage: @coupon.percentage }
+						else
+							return { error: 'Something went wrong with our server', status: 500 }
+						end
+					end
+				end
+			end
+		else
+			return { error: 'Invalid coupon Code', status: 400 }
+		end
+	end
+
+	def self.limit_reached?
+		@coupon.times_redeemed >= @coupon.limit
+	end
+
+	def self.discount_used?
+		@redemption = Redemption.find_by(user_id: @params[:user_id], discount_id: @coupon.id)
+		p @redemption
+	end
+
+	def self.redemption_created?
+		@redemption = Redemption.new({
+			discount_id: @coupon.id,
+			user_id: @params[:user_id]
+		})
+		@redemption.save
+		@redemption.valid?
+	end
 end

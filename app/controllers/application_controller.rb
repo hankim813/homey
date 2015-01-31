@@ -40,7 +40,7 @@ class ApplicationController < ActionController::API
 		def http_auth_header_content
 			return @http_auth_header_content if defined?(@http_auth_header_content)
 			@http_auth_header_content = begin
-				if request.headers['Authzorization'].present?
+				if request.headers['Authorization'].present?
 					request.headers['Authorization'].split(' ').last
 				else
 					nil

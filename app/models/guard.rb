@@ -9,8 +9,6 @@
 #  created_at     :datetime         not null
 #  updated_at     :datetime         not null
 #
-# Field Legend
-# type: { 0: Askari, 1: Bodyguard }
 
 class Guard < ActiveRecord::Base
 	belongs_to :security

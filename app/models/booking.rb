@@ -18,7 +18,7 @@ class Booking < ActiveRecord::Base
 	belongs_to :appointment
 	belongs_to :serviceable, polymorphic: true
 
-	validates :num_of_providers, numericality: { greater_than: 0 }, allow_nil: true
+	validates :num_of_providers, numericality: { greater_than: 0 }, allow_nil: true, presence: true
 
 	def service
 		case serviceable_type

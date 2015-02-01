@@ -1,4 +1,15 @@
 module PriceCalculator
+
+	def self.apply_coupon(params)
+		@params = params
+		result = validate_coupon(@params[:code])
+		if result.has_key?(:error)
+			@errors = true
+		else
+			@errors = false
+			@quote *= ((100 - result[:percentage]) / 100.00)
+		end
+	end
 	# For Home Cleanings
 	def self.home_cleaning(params)
 		calculate_hc_time(params)
@@ -22,17 +33,7 @@ module PriceCalculator
 			@quote += params[:ironed] * 300
 			@quote += (@providers - 1) * 300
 		end
-		@params = params
-		result = validate_coupon(params[:code])
-		p result
-		if result.has_key?(:error)
-			@errors = true
-		else
-			p @quote
-			@errors = false
-			@quote *= ((100 - result[:percentage]) / 100.00)
-			p @quote
-		end
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers, errors: @errors }
 	end
 
@@ -56,6 +57,7 @@ module PriceCalculator
 		@quote = params[:sqft] * 2
 		@quote += 300 if params[:kitchen] 
 		@quote += (@providers - 1) * 400
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers }
 	end
 
@@ -72,6 +74,7 @@ module PriceCalculator
 		calculate_cw_time(params)
 		calculate_cw_providers(params)
 		@quote = params[:cars] * 500
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers }
 	end
 
@@ -98,6 +101,7 @@ module PriceCalculator
 				car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)
 			end
 		end
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers }
 	end
 
@@ -126,6 +130,7 @@ module PriceCalculator
 				@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 3000)
 			end
 		end
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers }
 	end
 
@@ -146,6 +151,7 @@ module PriceCalculator
 		calculate_chef_providers(params)
 		@quote = 1500
 		@quote += (@providers - 1) * 1200
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers }
 	end
 
@@ -162,6 +168,7 @@ module PriceCalculator
 		calculate_gd_time(params)
 		calculate_gd_providers(params)
 		@quote = (params[:acres] / 0.50 ) * 1500
+		apply_coupon(params)
 		return { quote: @quote, time: @time, providers: @providers }
 	end
 

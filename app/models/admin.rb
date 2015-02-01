@@ -1,4 +1,23 @@
+# == Schema Information
+#
+# Table name: admins
+#
+#  id                  :integer          not null, primary key
+#  first_name          :string
+#  last_name           :string
+#  gender              :integer
+#  email               :string
+#  phone               :string
+#  authorization_level :integer
+#  password_hash       :string
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  birthday            :date
+#
+
 class Admin < ActiveRecord::Base
+  has_many :discounts
+  
   include BCrypt
 
   validates_uniqueness_of :email

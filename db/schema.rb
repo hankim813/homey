@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150129205948) do
+ActiveRecord::Schema.define(version: 20150131200543) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,17 @@ ActiveRecord::Schema.define(version: 20150129205948) do
     t.datetime "updated_at",          null: false
   end
 
+  create_table "discounts", force: :cascade do |t|
+    t.string   "code"
+    t.integer  "percentage"
+    t.integer  "times_redeemed"
+    t.integer  "admin_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+    t.integer  "limit"
+    t.boolean  "reusable"
+  end
+
   create_table "drivers", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -124,6 +135,13 @@ ActiveRecord::Schema.define(version: 20150129205948) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.boolean  "kitchen"
+  end
+
+  create_table "redemptions", force: :cascade do |t|
+    t.integer  "user_id"
+    t.integer  "discount_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
   end
 
   create_table "securities", force: :cascade do |t|

@@ -11,4 +11,7 @@
 
 class Chef < ActiveRecord::Base
 	has_one :booking, as: :serviceable
+
+	validates_presence_of :cuisine
+	validates :serving_size, numericality: { greater_than: 0 }, presence: true
 end

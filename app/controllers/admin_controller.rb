@@ -34,7 +34,7 @@ class AdminController < ApplicationController
       last_name: params[:lastName],
       gender: params[:gender].to_i,
       birthday: params[:birthday],
-      phone: params[:phone],
+      phone: params[:phone]
     }
 
     admin = Admin.new(adminData)
@@ -50,7 +50,7 @@ class AdminController < ApplicationController
   end
 
   def edit
-    if admin = Admin.find_by(id: params[:id])
+    if @current_admin
       adminData = {
         email: params[:email],
         password: params[:password],
@@ -58,12 +58,12 @@ class AdminController < ApplicationController
         last_name: params[:last_name],
         gender: params[:gender].to_i,
         birthday: params[:birthday],
-        phone: params[:phone],
+        phone: params[:phone]
       }
-      admin.update_attributes(adminData)
+      @current_admin.update_attributes(adminData)
 
-      if admin.save
-        return render json: admin, status:200
+      if @current_admin.save
+        return render json: @current_admin, status:200
       else
         return render json: { error: 'Invalid Form Fields' }, status: 400
       end
@@ -73,8 +73,8 @@ class AdminController < ApplicationController
   end
 
   def delete
-    if admin = Admin.find_by(id: params[:id])
-      if admin.delete
+    if @current_admin
+      if @current_admin.delete
         return render json: {}, status:200
       else
         return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400

@@ -7,7 +7,7 @@ class DiscountsController < ApplicationController
 			times_redeemed: 0,
 			limit: params[:limit],
 			reusable: params[:reusable] == '1',
-			admin_id: params[:id]
+			admin_id: @current_admin.id
 		})
 
 		if coupon.save

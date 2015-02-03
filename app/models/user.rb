@@ -16,6 +16,7 @@
 
 class User < ActiveRecord::Base
 	has_many :appointments
+	has_many :addresses
 	has_many :redemptions
 	has_many :bookings, through: :appointments
 

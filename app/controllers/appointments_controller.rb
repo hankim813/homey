@@ -5,20 +5,19 @@ class AppointmentsController < ApplicationController
 	end
 
 	def show
-		if appointments = Appointment.where(user_id: params[:id])
-			return render json: appointments, status: 200
+		if params[:id].to_i == @current_user.id 
+			if appointments = Appointment.where(user_id: params[:id])
+				return render json: appointments, status: 200
+			else
+				return render json: { error: 'Appointments Not Found' }, status: 400
+			end
 		else
-			return render json: { error: 'Appointments Not Found' }, status: 400
+			return render json: { error: 'You have no access' }, status: 403
 		end
 	end
 
 	def create
-		apptData = {
-			user_id: params[:id],
-			# service_date: params[:serviceDate]
-		}
-
-		appointment = Appointment.new(apptData)
+		appointment = Appointment.new()
 
 		if appointment.save
 			return render json: appointment, status: 201
@@ -55,7 +54,7 @@ class AppointmentsController < ApplicationController
 	end
 
 	def edit
-		if appointment = Appointment.find_by(id: params[:id])
+		if appointment = Appointment.find_by(id: params[:id]) && appointment.user.id == @current_user.id
 			appointment.service_date = params[:serviceDate]
 			if appointment.save
 				render json: appointment, status: 200

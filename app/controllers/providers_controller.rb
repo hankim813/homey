@@ -53,7 +53,7 @@ class ProvidersController < ApplicationController
   end
 
   def edit
-    if sp = ServiceProvider.find_by(id: params[:id])
+    if @current_sp
       spData = {
         email: params[:email],
         password: params[:password],
@@ -66,10 +66,10 @@ class ProvidersController < ApplicationController
         service: params[:service],
         address: params[:address]
       }
-      sp.update_attributes(spData)
+      @current_sp.update_attributes(spData)
 
-      if sp.save
-        return render json: sp, status:200
+      if @current_sp.save
+        return render json: @current_sp, status:200
       else
         return render json: { error: 'Invalid Form Fields' }, status: 400
       end
@@ -79,8 +79,8 @@ class ProvidersController < ApplicationController
   end
 
   def delete
-    if sp = ServiceProvider.find_by(id: params[:id])
-      if sp.delete
+    if @current_sp
+      if @current_sp.delete
         return render json: {}, status:200
       else
         return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400

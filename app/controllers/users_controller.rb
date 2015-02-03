@@ -54,7 +54,7 @@ class UsersController < ApplicationController
 	end
 
 	def edit
-		if user = User.find_by(id: params[:id])
+		if @current_user
 			user_data = {
 				first_name: params[:first_name],
 				last_name: params[:last_name],
@@ -62,10 +62,10 @@ class UsersController < ApplicationController
 				birthday: params[:birthday],
 				phone: params[:phone]
 			}
-			user.update_attributes(user_data)
+			@current_user.update_attributes(user_data)
 
-			if user.save
-				return render json: user, status:200
+			if @current_user.save
+				return render json: @current_user, status:200
 			else
 				return render json: { error: 'Invalid Form Fields' }, status: 400
 			end
@@ -75,11 +75,11 @@ class UsersController < ApplicationController
 	end
 
 	def delete
-		if user = User.find_by(id: params[:id])
-			if user.delete
+		if @current_user
+			if @current_user.delete
 				return render json: {}, status:200
 			else
-				return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
+				return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 500
 			end
 		else
 			return render json: { error: 'User Not Found' }, status: 400

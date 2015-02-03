@@ -10,12 +10,14 @@
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  canceled     :boolean          default("false")
+#  address_id   :integer
 #
 
 class Appointment < ActiveRecord::Base
 	belongs_to :user
+	belongs_to :address
 	has_one :booking
 
-	validates_presence_of :user_id, :service_date
+	validates_presence_of :user_id, :service_date, :address_id
 	validates_inclusion_of :completed, :paid, :canceled, in: [true, false]
 end

@@ -11,6 +11,8 @@ gem 'json', '~> 1.8.1' # Render json objects back to client
 
 gem 'pg' # Postgresql database
 
+gem 'rails_12factor', '~> 0.0.3' # heroku logging
+
 gem 'bcrypt-ruby', '~> 3.1.5' # Hashing Passwords
 
 gem 'annotate', '~> 2.6.5' # Annotate models
@@ -18,6 +20,7 @@ gem 'annotate', '~> 2.6.5' # Annotate models
 gem 'jwt', '~> 1.2.0' # Token Auth
 
 gem 'rack-cors', '~> 0.3.1' # CORS policy
+
 
 group :test, :development do
 	gem 'rspec-rails'

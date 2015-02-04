@@ -56,7 +56,9 @@ Rails.application.routes.draw do
 
   # Addresses
 
-  post 'api/addresses' => 'addresses#create'
+  post 'api/addresses' => 'addresses#create', defaults: { format: 'json' }
+  get 'api/users/:id/addresses' => 'addresses#index', defaults: { format: 'json' }
+  delete 'api/addresses/:id/delete' => 'addresses#destroy', defaults: { format: 'json' }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

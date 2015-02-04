@@ -1,6 +1,7 @@
 class AddressesController < ApplicationController
 
 	def index
+		return no_access unless params[:id].to_i == @current_user.id
 		if addresses = @current_user.addresses
 			return render json: addresses, status: 200
 		else
@@ -22,11 +23,10 @@ class AddressesController < ApplicationController
 			street: params[:street],
 			po_box: params[:po_box],
 			neighborhood: params[:neighborhood],
-			phone: params[:phone],
 			user_id: @current_user.id
 		})
 
-		if address.saved
+		if address.save
 			return render json: address, status: 201
 		else
 			return error_msg
@@ -34,7 +34,8 @@ class AddressesController < ApplicationController
 	end
 
 	def edit
-		if address = Address.find_by(id: params[:id]) && address.user.id == @current_user.id
+		address = Address.find_by(id: params[:id])
+		if address && address.user.id == @current_user.id
 			address.update_attribute(
 				building_name: params[:building_name],
 				street: params[:street],
@@ -54,7 +55,8 @@ class AddressesController < ApplicationController
 	end
 
 	def destroy
-		if address = Address.find_by(id: params[:id]) && address.user.id == @current_user.id
+		address = Address.find_by(id: params[:id])
+		if address && address.user.id == @current_user.id
 			if address.destroy
 				return render json: {}, status: 200
 			else

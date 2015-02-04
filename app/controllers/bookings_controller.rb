@@ -233,7 +233,8 @@ class BookingsController < ApplicationController
 			@errors = false
 			appointment_data = {
 				user_id: @current_user.id,
-				service_date: params[:serviceDate]
+				service_date: params[:serviceDate],
+				address_id: params[:address_id]
 			}
 
 			@appointment = Appointment.new(appointment_data)

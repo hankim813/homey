@@ -22,7 +22,7 @@ class AddressesController < ApplicationController
 			building_name: params[:building_name],
 			street: params[:street],
 			po_box: params[:po_box],
-			neighborhood: params[:neighborhood],
+			neighborhood: params[:neighborhood].to_i,
 			user_id: @current_user.id
 		})
 

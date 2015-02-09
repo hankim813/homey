@@ -10,6 +10,15 @@ module PriceCalculator
 			@quote *= ((100 - result[:percentage]) / 100.00)
 		end
 	end
+
+	def self.apply_transport_fees(address_id)
+		if address = Address.find_by(id: address_id)
+			@quote += 250 if address.neighborhood >= 5
+		else
+			return @errors = true
+		end
+	end
+
 	# For Home Cleanings
 	def self.home_cleaning(params)
 		calculate_hc_time(params)
@@ -33,6 +42,7 @@ module PriceCalculator
 			@quote += params[:ironed] * 300
 			@quote += (@providers - 1) * 300
 		end
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers, errors: @errors }
 	end
@@ -57,6 +67,7 @@ module PriceCalculator
 		@quote = params[:sqft] * 2
 		@quote += 300 if params[:kitchen] 
 		@quote += (@providers - 1) * 400
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }
 	end
@@ -74,6 +85,7 @@ module PriceCalculator
 		calculate_cw_time(params)
 		calculate_cw_providers(params)
 		@quote = params[:cars] * 500
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }
 	end
@@ -101,6 +113,7 @@ module PriceCalculator
 				car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)
 			end
 		end
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }
 	end
@@ -130,6 +143,7 @@ module PriceCalculator
 				@quote += (((guard[:hours] / 12.00).ceil - 1.00) * 3000)
 			end
 		end
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }
 	end
@@ -151,6 +165,7 @@ module PriceCalculator
 		calculate_chef_providers(params)
 		@quote = 1500
 		@quote += (@providers - 1) * 1200
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }
 	end
@@ -168,6 +183,7 @@ module PriceCalculator
 		calculate_gd_time(params)
 		calculate_gd_providers(params)
 		@quote = (params[:acres] / 0.50 ) * 1500
+		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }
 	end

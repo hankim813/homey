@@ -5,43 +5,54 @@ class ChargesController < ApplicationController
   def create
     #if current user has a customer id,
     #create a stripe charge and pass in that customer id
-    if @current_user.customer_id
-      customer_id = @current_user.customer_id
+    if customer_stripe_id_exists
+      p '9 exists'
+      response = charge
+      p '11 response'
+      return render json: response, status: 201
     else
-      # Get the credit card details submitted by the form
-      token = params[:stripeToken]
 
       # Create a Customer
-      customer = Stripe::Customer.create(
-        :card => token,
+      stripe_customer = Stripe::Customer.create(
+        :card => params[:stripeToken],
         :description => "new homey"
       )
 
       # Save the customer ID in your database so you can use it later
-      if user = User.find_by(id: @current_user.id)
-        user.customer_id = customer.id
+      @stripe_id = stripe_customer.id
+      @current_user.customer_id = @stripe_id
 
-        if user.save
-          p "user saved"
-          return render json: user, status:200
-        else
-          return render json: { error: 'Invalid Form Fields' }, status: 400
-        end
+      if @current_user.save
+        p "26 user saved"
+        response = charge
+        p '28 charged'
+        p response
+        return render json: response, status:201
       else
-        return render json: { error: 'User Not Found' }, status: 400
+        return render json: { error: 'Invalid Form Fields' }, status: 400
       end
+    end
+  end
 
-      customer_id = @current_user.customer_id
+  private
 
+    def customer_stripe_id_exists
+      if @current_user.customer_id
+        @stripe_id = @current_user.customer_id
+        true
+      else
+        false
+      end
     end
 
-    # Charge the Customer instead of the card
-    Stripe::Charge.create(
-      :amount => 1000, # in cents
-      :currency => "kes",
-      :customer => customer_id
-    )
-    p "stripe charge created"
-
-  end
+    def charge
+      p '44 charged'
+      p '45 stripe id'
+      p @stripe_id
+      Stripe::Charge.create(
+      :amount => 100000,
+      :currency => "KES",
+      :customer => @stripe_id
+      )
+    end
 end

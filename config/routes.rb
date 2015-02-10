@@ -54,6 +54,12 @@ Rails.application.routes.draw do
 
   post 'api/admins/:id/discounts' => 'discounts#create', defaults: { format: 'json' }
   get 'api/discounts/:id' => 'discounts#validate', defaults: { format: 'json' }
+
+  # Stripe Payments
+
+  post 'api/charges' => 'charges#create', defaults: { format: 'json' }
+
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

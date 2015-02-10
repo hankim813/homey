@@ -51,4 +51,8 @@ class ApplicationController < ActionController::API
 		def error_msg
 			return render json: { error: 'Invalid Data' }, status: 400
 		end
+
+		def no_access
+			return render json: { error: 'No access' }, status: 403
+		end
 end

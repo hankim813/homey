@@ -17,19 +17,19 @@ Rails.application.routes.draw do
   get 'api/users' => 'users#index', defaults: { format: 'json' }
   get 'api/users/:id' => 'users#show', defaults: { format: 'json'}
   put 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
-  delete 'api/users/:id/delete' => 'users#delete', defaults: { format: 'json'}
+  delete 'api/users/delete' => 'users#delete', defaults: { format: 'json'}
 
   # Service Providers
   get 'api/serviceProviders' => 'providers#index', defaults: { format: 'json' }
   get 'api/serviceProviders/:id' => 'providers#show', defaults: { format: 'json'}
-  put 'api/serviceProviders/:id/edit' => 'providers#edit', defaults: { format: 'json'}
-  delete 'api/serviceProviders/:id/delete' => 'providers#delete', defaults: { format: 'json'}
+  put 'api/serviceProviders/edit' => 'providers#edit', defaults: { format: 'json'}
+  delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
-  get 'api/admin' => 'admin#index', defaults: { format: 'json' }
-  get 'api/admin/:id' => 'admin#show', defaults: { format: 'json'}
-  put 'api/admin/:id/edit' => 'admin#edit', defaults: { format: 'json'}
-  delete 'api/admin/:id/delete' => 'admin#delete', defaults: { format: 'json'}
+  get 'api/admins' => 'admin#index', defaults: { format: 'json' }
+  get 'api/admins/:id' => 'admin#show', defaults: { format: 'json'}
+  put 'api/admins/edit' => 'admin#edit', defaults: { format: 'json'}
+  delete 'api/admins/delete' => 'admin#delete', defaults: { format: 'json'}
 
 
   # Appointments
@@ -52,8 +52,13 @@ Rails.application.routes.draw do
 
   # Discounts
 
-  post 'api/admins/:id/discounts' => 'discounts#create', defaults: { format: 'json' }
-  get 'api/discounts/:id' => 'discounts#validate', defaults: { format: 'json' }
+  post 'api/admins/discounts' => 'discounts#create', defaults: { format: 'json' }
+
+  # Addresses
+
+  post 'api/addresses' => 'addresses#create', defaults: { format: 'json' }
+  get 'api/users/:id/addresses' => 'addresses#index', defaults: { format: 'json' }
+  delete 'api/addresses/:id/delete' => 'addresses#destroy', defaults: { format: 'json' }
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

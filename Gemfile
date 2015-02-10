@@ -21,6 +21,7 @@ gem 'jwt', '~> 1.2.0' # Token Auth
 
 gem 'rack-cors', '~> 0.3.1' # CORS policy
 
+gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby' # Stripe payments
 
 group :test, :development do
 	gem 'rspec-rails'

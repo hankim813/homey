@@ -28,8 +28,8 @@ module Homey
     config.middleware.insert_before 0, "Rack::Cors", :debug => true, :logger => (-> { Rails.logger }) do
       allow do
           origins '*'
-          resource '*', 
-            headers: :any, 
+          resource '*',
+            headers: :any,
             methods: [:get, :post, :options, :put, :delete],
             max_age: 0
       end

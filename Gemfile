@@ -7,6 +7,8 @@ gem 'rails-api'
 
 gem 'spring', :group => :development
 
+gem 'dotenv-rails', '~> 1.0.2'
+
 gem 'json', '~> 1.8.1' # Render json objects back to client
 
 gem 'pg' # Postgresql database
@@ -21,6 +23,7 @@ gem 'jwt', '~> 1.2.0' # Token Auth
 
 gem 'rack-cors', '~> 0.3.1' # CORS policy
 
+gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby' # Stripe payments
 
 group :test, :development do
 	gem 'rspec-rails'

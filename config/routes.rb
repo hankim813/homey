@@ -52,13 +52,19 @@ Rails.application.routes.draw do
 
   # Discounts
 
-  post 'api/admins/discounts' => 'discounts#create', defaults: { format: 'json' }
+  post 'api/admins/:id/discounts' => 'discounts#create', defaults: { format: 'json' }
+  get 'api/discounts/:id' => 'discounts#validate', defaults: { format: 'json' }
 
   # Addresses
 
   post 'api/addresses' => 'addresses#create', defaults: { format: 'json' }
   get 'api/users/:id/addresses' => 'addresses#index', defaults: { format: 'json' }
   delete 'api/addresses/:id/delete' => 'addresses#destroy', defaults: { format: 'json' }
+
+  # Stripe Payments
+
+  post 'api/charges/stripe' => 'charges#create', defaults: { format: 'json' }
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

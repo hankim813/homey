@@ -8,6 +8,7 @@ class ChargesController < ApplicationController
     if customer_stripe_id_exists
       p '9 exists'
       response = charge
+      p response.id
       p '11 response'
       return render json: response, status: 201
     else
@@ -50,7 +51,7 @@ class ChargesController < ApplicationController
       p '45 stripe id'
       p @stripe_id
       Stripe::Charge.create(
-      :amount => 100000,
+      :amount => 5000,
       :currency => "KES",
       :customer => @stripe_id
       )

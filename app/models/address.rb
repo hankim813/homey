@@ -11,6 +11,7 @@
 #  updated_at    :datetime         not null
 #  neighborhood  :integer
 #
+# 
 # Legend 
 # Neighborhoods:
 # 

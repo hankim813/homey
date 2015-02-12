@@ -12,6 +12,7 @@
 #  phone         :string
 #  password_hash :string
 #  birthday      :date
+#  customer_id   :string
 #
 
 class User < ActiveRecord::Base

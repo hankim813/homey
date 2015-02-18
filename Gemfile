@@ -27,6 +27,8 @@ gem 'stripe', :git => 'https://github.com/stripe/stripe-ruby' # Stripe payments
 
 gem 'puma' # for heroku procfile web server
 
+gem 'sidekiq' # to set up background jobs for async email notifications
+
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'faker'

@@ -1,7 +1,7 @@
 class	Notifier
 	include Sidekiq::Worker
 
-	def perform(email)
-		puts 'sending email....'
+	def perform(name, email)
+		UserMailer.new_user(name, email).deliver_now
 	end
 end

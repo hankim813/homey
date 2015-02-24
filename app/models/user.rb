@@ -52,6 +52,6 @@ class User < ActiveRecord::Base
 	end
 
 	def send_welcome_email
-		UserMailer.new_user(self).deliver_now
+		Notifier.perform_async(self.first_name, self.email);
 	end
 end

@@ -1,11 +1,12 @@
 class UserMailer < ApplicationMailer
-	default from: "no-reply@homey.com"
+	default from: "Homey <no-reply@homey.com>"
 
-	def new_user(user)
-		@user = user
+	def new_user(name, email)
+		@name = name
+		@email = email
 		mail(
-			to: "#{@user.first_name} <#{@user.email}>",
-			subject: "Welcome to Homey, #{@user.first_name}!" 
+			to: "#{name} <#{email}>",
+			subject: "Welcome to Homey, #{name}!" 
 		) do |format|
 			format.html { render layout: @new_user }
 		end

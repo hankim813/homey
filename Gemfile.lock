@@ -193,6 +193,7 @@ DEPENDENCIES
   rails (= 4.2.0)
   rails-api
   rails_12factor (~> 0.0.3)
+  redis
   rspec-rails
   sidekiq
   spring

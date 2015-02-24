@@ -29,6 +29,8 @@ gem 'puma' # for heroku procfile web server
 
 gem 'sidekiq' # to set up background jobs for async email notifications
 
+gem 'redis' # to use with sidekiq
+
 group :test, :development do
 	gem 'rspec-rails'
 	gem 'faker'

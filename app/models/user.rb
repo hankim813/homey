@@ -26,6 +26,9 @@ class User < ActiveRecord::Base
 	validates_uniqueness_of :email
 	validates_presence_of :email, :password, :first_name, :last_name, :gender
 
+	# Send welcome email
+	after_create :send_welcome_email
+
 	# Password Hashing
 	def password
 		@password ||= Password.new(password_hash)
@@ -46,5 +49,9 @@ class User < ActiveRecord::Base
 		p 'PAYLOADDDDDD'
 		p payload
 		AuthToken.encode(payload)
+	end
+
+	def send_welcome_email
+		Notifier.perform_async(self.first_name, self.email);
 	end
 end

@@ -1,0 +1,9 @@
+development:
+  callback_url: 'http://0.0.0.0:3000/pesapal/callback'
+  consumer_key: 42q31KlzjaCv+OshMLvRnnDui7tXoqSJ
+  consumer_secret: U7iEYrUBSTC8IcCSFdzJSmHa5B8=
+
+production:
+  callback_url: 'http://1.2.3.4:3000/pesapal/callback'
+  consumer_key: <%= ENV['PESAPAL_CONSUMER_KEY'] %>
+  consumer_secret: <%= ENV['PESAPAL_CONSUMER_SECRET'] %>

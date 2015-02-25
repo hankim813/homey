@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   post 'api/fb' => 'users#fb', defaults: { format: 'json' }
   post 'api/serviceProviders/register' => 'providers#create', defaults: { format: 'json' }
   post 'api/serviceProviders/login' => 'providers#find', defaults: { format: 'json' }
-  post 'api/admin/register' => 'admin#create', defaults: { format: 'json' }
-  post 'api/admin/login' => 'admin#find', defaults: { format: 'json' }
+  post 'api/admin/register' => 'admins#create', defaults: { format: 'json' }
+  post 'api/admin/login' => 'admins#find', defaults: { format: 'json' }
 
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }

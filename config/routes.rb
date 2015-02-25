@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   post 'api/fb' => 'users#fb', defaults: { format: 'json' }
   post 'api/serviceProviders/register' => 'providers#create', defaults: { format: 'json' }
   post 'api/serviceProviders/login' => 'providers#find', defaults: { format: 'json' }
-  post 'api/admin/register' => 'admin#create', defaults: { format: 'json' }
-  post 'api/admin/login' => 'admin#find', defaults: { format: 'json' }
+  post 'api/admin/register' => 'admins#create', defaults: { format: 'json' }
+  post 'api/admin/login' => 'admins#find', defaults: { format: 'json' }
 
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }
@@ -26,10 +26,10 @@ Rails.application.routes.draw do
   delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
-  get 'api/admins' => 'admin#index', defaults: { format: 'json' }
-  get 'api/admins/:id' => 'admin#show', defaults: { format: 'json'}
-  put 'api/admins/edit' => 'admin#edit', defaults: { format: 'json'}
-  delete 'api/admins/delete' => 'admin#delete', defaults: { format: 'json'}
+  get 'api/admins' => 'admins#index', defaults: { format: 'json' }
+  get 'api/admins/:id' => 'admins#show', defaults: { format: 'json'}
+  put 'api/admins/edit' => 'admins#edit', defaults: { format: 'json'}
+  delete 'api/admins/delete' => 'admins#delete', defaults: { format: 'json'}
 
 
   # Appointments

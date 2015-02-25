@@ -17,6 +17,7 @@ class Appointment < ActiveRecord::Base
 	belongs_to :user
 	belongs_to :address
 	has_one :booking
+	has_many :assignments
 
 	validates_presence_of :user_id, :service_date, :address_id
 	validates_inclusion_of :completed, :paid, :canceled, in: [true, false]

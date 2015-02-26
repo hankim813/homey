@@ -19,8 +19,9 @@
 
 class ServiceProvider < ActiveRecord::Base
   include BCrypt
-  
+
   has_many :assignments
+  has_many :appointments, through: :assignments
 
   validates_uniqueness_of :email
   validates_presence_of :email, :password, :first_name, :last_name, :gender

@@ -26,7 +26,6 @@ Rails.application.routes.draw do
   delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
-  get 'api/admins' => 'admin#index', defaults: { format: 'json' }
   get 'api/admins/:id' => 'admin#show', defaults: { format: 'json'}
   put 'api/admins/edit' => 'admin#edit', defaults: { format: 'json'}
   delete 'api/admins/delete' => 'admin#delete', defaults: { format: 'json'}

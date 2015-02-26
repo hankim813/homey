@@ -1,5 +1,6 @@
 class ProvidersController < ApplicationController
   skip_before_action :authenticate_request, only: [:create, :find]
+  before_action :authenticate_sp_access, except: [:find, :create]
 
   def index
     return render json: ServiceProvider.all, status: 200
@@ -53,40 +54,39 @@ class ProvidersController < ApplicationController
   end
 
   def edit
-    if @current_sp
-      spData = {
-        email: params[:email],
-        password: params[:password],
-        first_name: params[:first_name],
-        last_name: params[:last_name],
-        gender: params[:gender].to_i,
-        birthday: params[:birthday],
-        phone: params[:phone],
-        years_experience: params[:years_experience],
-        service: params[:service],
-        address: params[:address]
-      }
-      @current_sp.update_attributes(spData)
+    spData = {
+      email: params[:email],
+      password: params[:password],
+      first_name: params[:first_name],
+      last_name: params[:last_name],
+      gender: params[:gender].to_i,
+      birthday: params[:birthday],
+      phone: params[:phone],
+      years_experience: params[:years_experience],
+      service: params[:service],
+      address: params[:address]
+    }
+    @current_sp.update_attributes(spData)
 
-      if @current_sp.save
-        return render json: @current_sp, status:200
-      else
-        return render json: { error: 'Invalid Form Fields' }, status: 400
-      end
+    if @current_sp.save
+      return render json: @current_sp, status:200
     else
-      return render json: { error: 'ServiceProvider Not Found' }, status: 400
+      return render json: { error: 'Invalid Form Fields' }, status: 400
     end
   end
 
   def delete
-    if @current_sp
-      if @current_sp.delete
-        return render json: {}, status:200
-      else
-        return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
-      end
+    if @current_sp.delete
+      return render json: {}, status:200
     else
-      return render json: { error: 'ServiceProvider Not Found' }, status: 400
+      return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
     end
   end
+
+  private
+
+    def authenticate_sp_access
+      # once the routes are more restful, check that the current_sp and the params[:id] match
+      return no_access if @current_user 
+    end
 end

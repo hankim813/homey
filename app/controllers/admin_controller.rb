@@ -1,6 +1,6 @@
 class AdminController < ApplicationController
   skip_before_action :authenticate_request, only: [:create, :find]
-  before_action :authenticate_admin, except: [:find, :create]
+  before_action :authenticate_admin_access, except: [:find, :create]
 
   def find
     admin = Admin.find_by(email: params[:email])
@@ -71,7 +71,9 @@ class AdminController < ApplicationController
 
   private
 
-    def authenticate_admin
+    def authenticate_admin_access
+      # once the routes are more restful, check that the current_admin and the params[:id] match
+      # implement authority level access
       return no_access if @current_admin.nil?
     end
 end

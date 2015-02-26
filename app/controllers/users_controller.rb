@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
 	skip_before_action :authenticate_request, only: [:create, :find, :fb]
+	before_action :authenticate_user_access, except: [:find, :create, :fb]
 
 	def index
 		render json: User.all, status: 200
@@ -54,35 +55,27 @@ class UsersController < ApplicationController
 	end
 
 	def edit
-		if @current_user
-			user_data = {
-				first_name: params[:first_name],
-				last_name: params[:last_name],
-				gender: params[:gender].to_i,
-				birthday: params[:birthday],
-				phone: params[:phone]
-			}
-			@current_user.update_attributes(user_data)
+		user_data = {
+			first_name: params[:first_name],
+			last_name: params[:last_name],
+			gender: params[:gender].to_i,
+			birthday: params[:birthday],
+			phone: params[:phone]
+		}
+		@current_user.update_attributes(user_data)
 
-			if @current_user.save
-				return render json: @current_user, status:200
-			else
-				return render json: { error: 'Invalid Form Fields' }, status: 400
-			end
+		if @current_user.save
+			return render json: @current_user, status:200
 		else
-			return render json: { error: 'User Not Found' }, status: 400
+			return render json: { error: 'Invalid Form Fields' }, status: 400
 		end
 	end
 
 	def delete
-		if @current_user
-			if @current_user.delete
-				return render json: {}, status:200
-			else
-				return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 500
-			end
+		if @current_user.delete
+			return render json: {}, status:200
 		else
-			return render json: { error: 'User Not Found' }, status: 400
+			return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 500
 		end
 	end
 
@@ -111,5 +104,12 @@ class UsersController < ApplicationController
 			end
 		end
 	end
+
+	private
+
+		def authenticate_user_access
+      # once the routes are more restful, check that the current_user and the params[:id] match
+			return no_access if @current_sp
+		end
 
 end

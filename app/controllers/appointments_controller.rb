@@ -79,4 +79,39 @@ class AppointmentsController < ApplicationController
 		end
 	end
 
+	def completed
+		completed_appts = Appointment.where(completed: true)
+		return render json: completed_appts, status: 200
+	end
+
+	def incomplete
+		incomplete_appts = Appointment.where(completed: false)
+		return render json: incomplete_appts, status: 200
+	end
+
+	def paid
+		paid_appts = Appointment.where(paid: true)
+		return render json: paid_appts, status: 200
+	end
+
+	def unpaid
+		unpaid_appts = Appointment.where(paid: false)
+		return render json: unpaid_appts, status: 200
+	end
+
+	def assigned
+		assigned_appts = Appointment.where(assigned: true)
+		return render json: assigned_appts, status: 200
+	end
+
+	def unassigned
+		unassigned_appts = Appointment.where(assigned: false)
+		return render json: unassigned_appts, status: 200
+	end
+
+	def upcoming
+	end
+
+	def past
+	end
 end

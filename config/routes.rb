@@ -16,18 +16,20 @@ Rails.application.routes.draw do
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }
   get 'api/users/:id' => 'users#show', defaults: { format: 'json'}
+  # ASK FOR ID's
   put 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
   delete 'api/users/delete' => 'users#delete', defaults: { format: 'json'}
 
   # Service Providers
   get 'api/serviceProviders' => 'providers#index', defaults: { format: 'json' }
   get 'api/serviceProviders/:id' => 'providers#show', defaults: { format: 'json'}
+  # ASK FOR ID's
   put 'api/serviceProviders/edit' => 'providers#edit', defaults: { format: 'json'}
   delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
-  get 'api/admins' => 'admin#index', defaults: { format: 'json' }
   get 'api/admins/:id' => 'admin#show', defaults: { format: 'json'}
+  # ASK FOR ID's
   put 'api/admins/edit' => 'admin#edit', defaults: { format: 'json'}
   delete 'api/admins/delete' => 'admin#delete', defaults: { format: 'json'}
 

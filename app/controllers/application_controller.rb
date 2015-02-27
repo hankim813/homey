@@ -12,6 +12,7 @@ class ApplicationController < ActionController::API
 	private
 
 		def set_current_user
+			return no_access if @decoded_auth_token.nil?
 			if @decoded_auth_token[:user_id]
 				@current_user ||= User.find_by(id: @decoded_auth_token[:user_id])
 			elsif @decoded_auth_token[:sp_id]

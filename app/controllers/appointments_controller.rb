@@ -5,7 +5,7 @@ class AppointmentsController < ApplicationController
 	end
 
 	def show
-		if params[:id].to_i == @current_user.id 
+		if params[:id].to_i == @current_user.id
 			if appointments = Appointment.where(user_id: params[:id])
 				return render json: appointments, status: 200
 			else
@@ -79,30 +79,30 @@ class AppointmentsController < ApplicationController
 		end
 	end
 
-	def completed
-		completed_appts = Appointment.where(completed: true)
-		return render json: completed_appts, status: 200
-	end
+	# def completed
+	# 	completed_appts = Appointment.where(completed: true)
+	# 	return render json: completed_appts, status: 200
+	# end
 
-	def incomplete
-		incomplete_appts = Appointment.where(completed: false)
-		return render json: incomplete_appts, status: 200
-	end
+	# def incomplete
+	# 	incomplete_appts = Appointment.where(completed: false)
+	# 	return render json: incomplete_appts, status: 200
+	# end
 
-	def paid
-		paid_appts = Appointment.where(paid: true)
-		return render json: paid_appts, status: 200
-	end
+	# def paid
+	# 	paid_appts = Appointment.where(paid: true)
+	# 	return render json: paid_appts, status: 200
+	# end
 
-	def unpaid
-		unpaid_appts = Appointment.where(paid: false)
-		return render json: unpaid_appts, status: 200
-	end
+	# def unpaid
+	# 	unpaid_appts = Appointment.where(paid: false)
+	# 	return render json: unpaid_appts, status: 200
+	# end
 
-	def assigned
-		assigned_appts = Appointment.where(assigned: true)
-		return render json: assigned_appts, status: 200
-	end
+	# def assigned
+	# 	assigned_appts = Appointment.where(assigned: true)
+	# 	return render json: assigned_appts, status: 200
+	# end
 
 	def unassigned
 		unassigned_appts = Appointment.where(assigned: false)
@@ -110,8 +110,24 @@ class AppointmentsController < ApplicationController
 	end
 
 	def upcoming
-	end
+    today = Date.today
+    thirty_days_from_now = 30.days.from_now
+    if appointments = Appointment.where(service_date: today..thirty_days_from_now)
+      return render json: appointments, status: 200
+    else
+      return render json: { error: 'No upcoming appointments' }, status: 400
+    end
+  end
 
 	def past
+		p "in past"
+		today = Date.today
+		thirty_days_ago = 30.days.ago
+		if appointments = Appointment.where(service_date: thirty_days_ago..today)
+			return render json: appointments, status: 200
+		else
+			return render json: { error: 'No past appointments' }, status: 400
+		end
 	end
+
 end

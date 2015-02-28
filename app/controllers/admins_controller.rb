@@ -1,6 +1,9 @@
 class AdminsController < ApplicationController
   skip_before_action :authenticate_request, only: [:create, :find]
-  before_action :authenticate_admin_access, except: [:find, :create]
+
+  def index
+    return render json: Admin.all, status: 200
+  end
 
   def find
     admin = Admin.find_by(email: params[:email])
@@ -16,7 +19,11 @@ class AdminsController < ApplicationController
   end
 
   def show
-    return render json: admin, status: 200 if admin = Admin.find_by(id: params[:id])
+    if admin = Admin.find_by(id: params[:id])
+      return render json: admin, status: 200
+    else
+      return render json: { error: 'Admin Not Found' }, status: 400
+    end
   end
 
   def create
@@ -43,37 +50,37 @@ class AdminsController < ApplicationController
   end
 
   def edit
-    adminData = {
-      email: params[:email],
-      password: params[:password],
-      first_name: params[:first_name],
-      last_name: params[:last_name],
-      gender: params[:gender].to_i,
-      birthday: params[:birthday],
-      phone: params[:phone]
-    }
-    @current_admin.update_attributes(adminData)
+    if @current_admin
+      adminData = {
+        email: params[:email],
+        password: params[:password],
+        first_name: params[:first_name],
+        last_name: params[:last_name],
+        gender: params[:gender].to_i,
+        birthday: params[:birthday],
+        phone: params[:phone]
+      }
+      @current_admin.update_attributes(adminData)
 
-    if @current_admin.save
-      return render json: @current_admin, status:200
+      if @current_admin.save
+        return render json: @current_admin, status:200
+      else
+        return render json: { error: 'Invalid Form Fields' }, status: 400
+      end
     else
-      return render json: { error: 'Invalid Form Fields' }, status: 400
+      return render json: { error: 'Admin Not Found' }, status: 400
     end
   end
 
   def delete
-    if @current_admin.delete
-      return render json: {}, status:200
+    if @current_admin
+      if @current_admin.delete
+        return render json: {}, status:200
+      else
+        return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
+      end
     else
-      return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
+      return render json: { error: 'Admin Not Found' }, status: 400
     end
   end
-
-  private
-
-    def authenticate_admin_access
-      # once the routes are more restful, check that the current_admin and the params[:id] match
-      # implement authority level access
-      return no_access if @current_admin.nil?
-    end
 end

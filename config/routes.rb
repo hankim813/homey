@@ -28,10 +28,10 @@ Rails.application.routes.draw do
   delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
-  get 'api/admins/:id' => 'admin#show', defaults: { format: 'json'}
+  get 'api/admins/:id' => 'admins#show', defaults: { format: 'json'}
   # ASK FOR ID's
-  put 'api/admins/edit' => 'admin#edit', defaults: { format: 'json'}
-  delete 'api/admins/delete' => 'admin#delete', defaults: { format: 'json'}
+  put 'api/admins/edit' => 'admins#edit', defaults: { format: 'json'}
+  delete 'api/admins/delete' => 'admins#delete', defaults: { format: 'json'}
 
 
   # Appointments

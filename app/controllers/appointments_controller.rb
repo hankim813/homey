@@ -120,10 +120,10 @@ class AppointmentsController < ApplicationController
   end
 
 	def past
-		p "in past"
 		today = Date.today
 		thirty_days_ago = 30.days.ago
 		if appointments = Appointment.where(service_date: thirty_days_ago..today)
+			p appointments[0];
 			return render json: appointments, status: 200
 		else
 			return render json: { error: 'No past appointments' }, status: 400

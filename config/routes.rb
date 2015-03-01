@@ -36,6 +36,8 @@ Rails.application.routes.draw do
 
   # Appointments
   get 'api/users/:id/appointments' => 'appointments#show', defaults: { format: 'json' }
+  get 'api/sp/:id/appointments/upcoming' => 'appointments#spUpcoming', defaults: { format: 'json' }
+  get 'api/sp/:id/appointments/past' => 'appointments#spPast', defaults: { format: 'json' }
   put 'api/appointments/:id/pay' => 'appointments#pay', defaults: { format: 'json' }
   put 'api/appointments/:id/complete' => 'appointments#complete', defaults: { format: 'json' }
   put 'api/appointments/:id/cancel' => 'appointments#cancel', defaults: { format: 'json' }

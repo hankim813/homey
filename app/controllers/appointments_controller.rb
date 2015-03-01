@@ -123,11 +123,32 @@ class AppointmentsController < ApplicationController
 		today = Date.today
 		thirty_days_ago = 30.days.ago
 		if appointments = Appointment.where(service_date: thirty_days_ago..today)
-			p appointments[0];
 			return render json: appointments, status: 200
 		else
 			return render json: { error: 'No past appointments' }, status: 400
 		end
+	end
+
+	def spUpcoming
+		today = Date.today
+    thirty_days_from_now = 30.days.from_now
+
+	  if appointments = Appointment.where(service_date: today..thirty_days_from_now, id: params[:id])
+	    return render json: appointments, status: 200
+	  else
+	    return render json: { error: 'No upcoming appointments' }, status: 400
+	  end
+	end
+
+	def spPast
+		today = Date.today
+    thirty_days_ago = 30.days.ago
+
+	  if appointments = Appointment.where(service_date: thirty_days_ago..today, id: params[:id])
+	    return render json: appointments, status: 200
+	  else
+	    return render json: { error: 'No upcoming appointments' }, status: 400
+	  end
 	end
 
 end

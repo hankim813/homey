@@ -132,23 +132,29 @@ class AppointmentsController < ApplicationController
 	def spUpcoming
 		today = Date.today
     thirty_days_from_now = 30.days.from_now
-
-	  if appointments = Appointment.where(service_date: today..thirty_days_from_now, id: params[:id])
-	    return render json: appointments, status: 200
+    if sp = ServiceProvider.find_by(id: params[:id])
+    	if appointments = sp.appointments.where(service_date: today..thirty_days_from_now)
+    		return render json: appointments, status: 200
+	  	else
+	    	return render json: { error: 'No Upcoming Appointments' }, status: 400
+	  	end
 	  else
-	    return render json: { error: 'No upcoming appointments' }, status: 400
-	  end
-	end
+			return render json: { error: 'Service Provider Not Found' }, status: 400
+		end
+ 	end
 
 	def spPast
 		today = Date.today
     thirty_days_ago = 30.days.ago
-
-	  if appointments = Appointment.where(service_date: thirty_days_ago..today, id: params[:id])
-	    return render json: appointments, status: 200
-	  else
-	    return render json: { error: 'No upcoming appointments' }, status: 400
-	  end
+    if sp = ServiceProvider.find_by(id: params[:id])
+    	if appointments = sp.appointments.where(service_date: thirty_days_ago..today)
+		    return render json: appointments, status: 200
+		  else
+		    return render json: { error: 'No Past Appointments' }, status: 400
+		  end
+    else
+    	return render json: { error: 'Service Provider Not Found' }, status: 400
+    end
 	end
 
 end

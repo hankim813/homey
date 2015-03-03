@@ -1,11 +1,11 @@
 class AssignmentsController < ApplicationController
 
 	def create
-		if appt = Appointment.find_by(id: params[:appt_id])
-			if sp = ServiceProvider.find_by(id: params[:sp_id])
+		if appt = Appointment.find_by(id: params[:appointment_id])
+			if sp = ServiceProvider.find_by(id: params[:service_provider_id])
 				assignment = Assignment.new({
 					appointment_id: appt.id,
-					service_provider_id: sp.id	
+					service_provider_id: sp.id
 				})
 				if assignment.save
 					appt.update_attributes(assigned: true)
@@ -26,7 +26,7 @@ class AssignmentsController < ApplicationController
 			if sp = ServiceProvider.find_by(id: params[:sp_id])
 				assignment = Assignment.find_by(
 					appointment_id: appt.id,
-					service_provider_id: sp.id	
+					service_provider_id: sp.id
 				)
 				if assignment.destroy
 					appt.update_attributes(assigned: false)

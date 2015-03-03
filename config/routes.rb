@@ -47,6 +47,8 @@ Rails.application.routes.draw do
   get 'api/appointments/past' => 'appointments#past', defaults: { format: 'json' }
   get 'api/appointments/unassigned' => 'appointments#unassigned', defaults: { format: 'json' }
 
+  post 'api/assignments' => 'assignments#create', defaults: { format: 'json' }
+
   # Bookings
 
   post 'api/appointments/bookings/home-cleanings' => 'bookings#home_cleanings', defaults: { format: 'json' }

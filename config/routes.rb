@@ -75,6 +75,10 @@ Rails.application.routes.draw do
 
   post 'api/charges/stripe' => 'charges#create', defaults: { format: 'json' }
 
+  # Contact Emails
+
+  post 'api/mailer/contact' => 'mailers#contact'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

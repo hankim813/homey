@@ -10,8 +10,8 @@ Rails.application.routes.draw do
   post 'api/fb' => 'users#fb', defaults: { format: 'json' }
   post 'api/serviceProviders/register' => 'providers#create', defaults: { format: 'json' }
   post 'api/serviceProviders/login' => 'providers#find', defaults: { format: 'json' }
-  post 'api/admin/register' => 'admin#create', defaults: { format: 'json' }
-  post 'api/admin/login' => 'admin#find', defaults: { format: 'json' }
+  post 'api/admins/register' => 'admins#create', defaults: { format: 'json' }
+  post 'api/admins/login' => 'admins#find', defaults: { format: 'json' }
 
   # Users
   get 'api/users' => 'users#index', defaults: { format: 'json' }
@@ -28,18 +28,26 @@ Rails.application.routes.draw do
   delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
-  get 'api/admins/:id' => 'admin#show', defaults: { format: 'json'}
+  get 'api/admins/:id' => 'admins#show', defaults: { format: 'json'}
   # ASK FOR ID's
-  put 'api/admins/edit' => 'admin#edit', defaults: { format: 'json'}
-  delete 'api/admins/delete' => 'admin#delete', defaults: { format: 'json'}
+  put 'api/admins/edit' => 'admins#edit', defaults: { format: 'json'}
+  delete 'api/admins/delete' => 'admins#delete', defaults: { format: 'json'}
 
 
   # Appointments
   get 'api/users/:id/appointments' => 'appointments#show', defaults: { format: 'json' }
+  get 'api/sp/:id/appointments/upcoming' => 'appointments#spUpcoming', defaults: { format: 'json' }
+  get 'api/sp/:id/appointments/past' => 'appointments#spPast', defaults: { format: 'json' }
   put 'api/appointments/:id/pay' => 'appointments#pay', defaults: { format: 'json' }
   put 'api/appointments/:id/complete' => 'appointments#complete', defaults: { format: 'json' }
   put 'api/appointments/:id/cancel' => 'appointments#cancel', defaults: { format: 'json' }
   post 'api/users/:id/appointments' => 'appointments#create', defaults: { format: 'json' }
+
+  get 'api/appointments/upcoming' => 'appointments#upcoming', defaults: { format: 'json' }
+  get 'api/appointments/past' => 'appointments#past', defaults: { format: 'json' }
+  get 'api/appointments/unassigned' => 'appointments#unassigned', defaults: { format: 'json' }
+
+  post 'api/assignments' => 'assignments#create', defaults: { format: 'json' }
 
   # Bookings
 

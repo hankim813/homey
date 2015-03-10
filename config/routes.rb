@@ -17,21 +17,21 @@ Rails.application.routes.draw do
   get 'api/users' => 'users#index', defaults: { format: 'json' }
   get 'api/users/:id' => 'users#show', defaults: { format: 'json'}
   # ASK FOR ID's
-  put 'api/users/edit' => 'users#edit', defaults: { format: 'json'}
-  delete 'api/users/delete' => 'users#delete', defaults: { format: 'json'}
+  put 'api/users/:id/edit' => 'users#edit', defaults: { format: 'json'}
+  delete 'api/users/:id/delete' => 'users#delete', defaults: { format: 'json'}
 
   # Service Providers
   get 'api/serviceProviders' => 'providers#index', defaults: { format: 'json' }
   get 'api/serviceProviders/:id' => 'providers#show', defaults: { format: 'json'}
   # ASK FOR ID's
-  put 'api/serviceProviders/edit' => 'providers#edit', defaults: { format: 'json'}
-  delete 'api/serviceProviders/delete' => 'providers#delete', defaults: { format: 'json'}
+  put 'api/serviceProviders/:id/edit' => 'providers#edit', defaults: { format: 'json'}
+  delete 'api/serviceProviders/:id/delete' => 'providers#delete', defaults: { format: 'json'}
 
   # Admin
   get 'api/admins/:id' => 'admins#show', defaults: { format: 'json'}
   # ASK FOR ID's
-  put 'api/admins/edit' => 'admins#edit', defaults: { format: 'json'}
-  delete 'api/admins/delete' => 'admins#delete', defaults: { format: 'json'}
+  put 'api/admins/:id/edit' => 'admins#edit', defaults: { format: 'json'}
+  delete 'api/admins/:id/delete' => 'admins#delete', defaults: { format: 'json'}
 
 
   # Appointments

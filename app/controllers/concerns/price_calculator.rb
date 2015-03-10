@@ -77,7 +77,11 @@ module PriceCalculator
 	end
 
 	def self.calculate_oc_providers(params)
-		@providers = ((params[:sqft] - 500) / 1000).ceil + 1
+		if params[:sqft] > 500
+			@providers = ((params[:sqft] - 500) / 1000).ceil + 1
+		else
+			@providers = 1;
+		end
 	end
 
 	# For Car Wash

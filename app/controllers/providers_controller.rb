@@ -76,7 +76,16 @@ class ProvidersController < ApplicationController
   end
 
   def delete
+    assignments = @current_sp.assignments
+    appointments = @current_sp.appointments
+
     if @current_sp.delete
+      if assignments.destroy_all
+        appointments.each do |appt|
+          appt.assigned = false
+          appt.save
+        end
+      end
       return render json: {}, status:200
     else
       return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 400
@@ -87,6 +96,6 @@ class ProvidersController < ApplicationController
 
     def authenticate_sp_access
       # once the routes are more restful, check that the current_sp and the params[:id] match
-      return no_access if @current_user 
+      return no_access if @current_user
     end
 end

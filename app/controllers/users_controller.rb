@@ -72,7 +72,14 @@ class UsersController < ApplicationController
 	end
 
 	def delete
+		appointments = @current_user.appointments
 		if @current_user.delete
+			if appointments
+				appointments.each do |appt|
+					appt.canceled = true
+					appt.save
+				end
+			end
 			return render json: {}, status:200
 		else
 			return render json: { error: 'Something Went Wrong, Please Try Again' }, status: 500

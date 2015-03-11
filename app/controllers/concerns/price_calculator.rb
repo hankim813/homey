@@ -108,14 +108,11 @@ module PriceCalculator
 		calculate_d_providers(params)
 		@quote = 0
 		params[:cars].each do |car|
-			if car[:owned] == 'true'
-				@quote += 200 if car[:day_or_night].to_i == 0
-				car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)  
-			else
-				@quote += 200 if car[:day_or_night].to_i == 0
+			@quote += 200 if car[:day_or_night].to_i == 0
+			if car[:owned] == 'false'
 				car[:wheel_type].to_i == 0 ? @quote += 3500 : @quote += 7000
-				car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)
 			end
+			car[:hours] >= 12.00 ? (@quote += (car[:hours] - 12.00) * 300 + 1500) : (@quote += car[:hours] * 300)
 		end
 		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
@@ -179,7 +176,11 @@ module PriceCalculator
 	end
 
 	def self.calculate_chef_providers(params)
-		@providers = ((params[:serving_size] - 15) / 10.00).ceil + 1
+		if params[:serving_size] > 15 
+			@providers = ((params[:serving_size] - 15) / 10.00).ceil + 1
+		else
+			@providers = 1
+		end
 	end
 
 	# For Gardening

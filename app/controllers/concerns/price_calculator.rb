@@ -187,7 +187,7 @@ module PriceCalculator
 	def self.gardening(params)
 		calculate_gd_time(params)
 		calculate_gd_providers(params)
-		@quote = (params[:acres] / 0.50 ) * 1500
+		@quote = params[:acres] * 750.00
 		apply_transport_fees(params[:address_id])
 		apply_coupon(params) if params[:code]
 		return { quote: @quote, time: @time, providers: @providers }

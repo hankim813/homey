@@ -25,12 +25,12 @@ module PriceCalculator
 		calculate_hc_providers(params)
 		if params[:bedrooms] == 2 && params[:bathrooms] == 2 && params[:kitchens] == 1 && params[:livingrooms] == 1
 			@quote = 1000
-			@quote += params[:loads] * 350
+			@quote += params[:laundry] * 350
 			@quote += params[:ironed] * 300
 			@quote += ((@providers - 1) * 300)
 		elsif params[:bedrooms] == 3 && params[:bathrooms] == 3 && params[:kitchens] == 1 && params[:livingrooms] == 1
 			@quote = 1500
-			@quote += params[:loads] * 350
+			@quote += params[:laundry] * 350
 			@quote += params[:ironed] * 300
 			@quote += ((@providers - 1) * 300)
 		else
@@ -38,7 +38,7 @@ module PriceCalculator
 			@quote += params[:bathrooms] * 200
 			@quote += params[:kitchens] * 300
 			@quote += params[:livingrooms] * 300
-			@quote += params[:loads] * 350
+			@quote += params[:laundry] * 350
 			@quote += params[:ironed] * 300
 			@quote += (@providers - 1) * 300
 		end
@@ -52,7 +52,7 @@ module PriceCalculator
 		@time += params[:bathrooms] * 0.50
 		@time += params[:kitchens] * 1.00
 		@time += params[:livingrooms] * 0.50
-		@time += params[:loads] * 4.00
+		@time += params[:laundry] * 4.00
 		@time += params[:ironed] * 4.00
 	end
 

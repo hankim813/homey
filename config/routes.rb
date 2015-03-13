@@ -5,9 +5,9 @@ Rails.application.routes.draw do
   post 'api/auth' => 'auth#authenticate', defaults: { format: 'json' }
 
   # Login/Register
-  post 'api/login' => 'users#find', defaults: { format: 'json' }
-  post 'api/register' => 'users#create', defaults: { format: 'json' }
-  post 'api/fb' => 'users#fb', defaults: { format: 'json' }
+  post 'api/users/login' => 'users#find', defaults: { format: 'json' }
+  post 'api/users/register' => 'users#create', defaults: { format: 'json' }
+  post 'api/users/fb' => 'users#fb', defaults: { format: 'json' }
   post 'api/serviceProviders/register' => 'providers#create', defaults: { format: 'json' }
   post 'api/serviceProviders/login' => 'providers#find', defaults: { format: 'json' }
   post 'api/admins/register' => 'admins#create', defaults: { format: 'json' }

@@ -78,7 +78,11 @@ Rails.application.routes.draw do
   # Contact Emails
 
   post 'api/mailer/contact' => 'mailers#contact'
-  
+  post 'api/mailer/contact/:email' => 'passwords#contact'
+
+  # Change Password
+  put 'api/passwords/reset' => 'passwords#reset_user_password', defaults: { format: 'json' }
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

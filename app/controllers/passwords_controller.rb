@@ -1,4 +1,4 @@
-class PasswordTokensController < ApplicationController
+class PasswordsController < ApplicationController
   skip_before_action :authenticate_request
 
   #contact and generate token are used to send token email

@@ -6,7 +6,7 @@ class AdminMailer < ApplicationMailer
 		@mood = mood
 		@message = message
 		mail(
-			to: "hankim813@gmail.com",
+			to: "emuli1@babson.edu",
 			from: "#{name} <#{email}>",
 			subject: "#{name} has a message for Homey!" 
 		) do |format|
